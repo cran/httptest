@@ -1,4 +1,9 @@
-### httptest 1.2.0
+## httptest 1.3.0
+* New context `capture_requests` to collect the responses from real requests and store them as mock files
+* `with_trace` convenience wrapper around `trace`/`untrace`
+* `mockDownload` now processes request URLs as `mockRequest` does
+
+## httptest 1.2.0
 * Add support in `with_mock_API` for loading request fixtures for all HTTP verbs, not only GET ([#4](https://github.com/nealrichardson/httptest/pull/4)). Include request body in the mock file path hashing.
 * `buildMockURL` can accept either a 'request' object or a character URL
 * Bump mock payload max size up to 128K

@@ -2,13 +2,13 @@
 #'
 #' This expectation checks that a HTTP header (and potentially header value)
 #' is present in a request. It works by inspecting the request object and
-#' raising warnings that are caught by \code{\link[testthat]{expect_warning}}.
+#' raising warnings that are caught by [testthat::expect_warning()].
 #'
-#' \code{expect_header} works both in the mock HTTP contexts and on "live" HTTP
+#' `expect_header` works both in the mock HTTP contexts and on "live" HTTP
 #' requests.
 #'
-#' @param ... Arguments passed to \code{expect_warning}
-#' @return \code{NULL}, according to \code{expect_warning}.
+#' @param ... Arguments passed to `expect_warning`
+#' @return `NULL`, according to `expect_warning`.
 #' @importFrom httr add_headers
 #' @importFrom testthat expect_warning
 #' @examples
@@ -33,7 +33,18 @@ expect_header <- function (...) {
     })
 }
 
-with_trace <- function (x, where, print=FALSE, ..., expr) {
+#' Wrapper around 'trace' to untrace when finished
+#'
+#' @param x Name of function to trace. See [base::trace()].
+#' @param where where to look for the function to be traced.
+#' @param print Logical: print a message every time the traced function is hit?
+#' Default is `FALSE`; note that in `trace`, the default is `TRUE`.
+#' @param ... Additional arguments to pass to `trace`. At minimum, must include
+#' either `tracer` and `at`, or `exit`.
+#' @param expr Code to run inside the context
+#' @return The result of `expr`
+#' @export
+with_trace <- function (x, where=topenv(parent.frame()), print=FALSE, ..., expr) {
     suppressMessages(trace(x, print=print, where=where, ...))
     on.exit(suppressMessages(untrace(x, where=where)))
     eval.parent(expr)
