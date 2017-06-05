@@ -6,9 +6,9 @@
 \alias{stop_capturing}
 \title{Collect API Responses as Mock Files}
 \usage{
-capture_requests(expr, path = ".")
+capture_requests(expr, path = ".", simplify = TRUE)
 
-start_capturing(path = ".")
+start_capturing(path = ".", simplify = TRUE)
 
 stop_capturing()
 }
@@ -17,19 +17,34 @@ stop_capturing()
 
 \item{path}{Where to save the mock files. Default is the current working
 directory.}
+
+\item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
+will be written as just the text of the response body. In all other cases,
+and when \code{simplify} is \code{FALSE}, the "response" object will be written out to
+a .R file using \code{\link[base:dput]{base::dput()}}.}
 }
 \value{
-The result of \code{expr}
+\code{capture_requests} returns the result of \code{expr}. \code{start_capturing}
+invisibly returns the \code{path} it is given. \code{stop_capturing} returns nothing;
+it is called for its side effects.
 }
 \description{
 \code{capture_requests} is a context that collects the responses from requests
 you make and stores them as mock files. This enables you to perform a series
 of requests against a live server once and then build your test suite using
 those mocks, running your tests in \code{\link[=with_mock_API]{with_mock_API()}}.
-}
-\details{
 \code{start_capturing} and \code{stop_capturing} allow you to turn on/off request
 recording for more convenient use in an interactive session.
+}
+\details{
+Mocks stored by this context are written out as plain-text files, either with
+extension \code{.json} if the request returned JSON content or with extension \code{.R}
+otherwise. The \code{.R} files contain syntax that when executed recreates the
+\code{httr} "response" object. By storing fixtures as plain-text files, you can
+more easily confirm that your mocks look correct, and you can more easily
+maintain them without having to re-record them. If the API changes subtly,
+such as when adding an additional attribute to an object, you can just touch
+up the mocks.
 }
 \examples{
 \dontrun{
