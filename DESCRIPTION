@@ -13,7 +13,7 @@ Description: Testing code and packages that communicate with remote servers can
     not--made. Using these tools, one can test that code is making the intended
     requests and that it handles the expected responses correctly, all without
     depending on a connection to a remote API.
-Version: 2.1.0
+Version: 2.1.2
 Authors@R: person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com")
 URL: https://github.com/nealrichardson/httptest
 BugReports: https://github.com/nealrichardson/httptest/issues
@@ -24,8 +24,8 @@ Suggests: knitr
 RoxygenNote: 6.0.0
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-07-31 05:24:46 UTC; neal.richardson
+Packaged: 2017-08-04 20:12:41 UTC; neal.richardson
 Author: Neal Richardson [aut, cre]
 Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-07-31 08:19:06 UTC
+Date/Publication: 2017-08-04 23:06:41 UTC
