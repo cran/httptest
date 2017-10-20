@@ -2,19 +2,18 @@
 % Please edit documentation in R/fake-http.R
 \name{fakeResponse}
 \alias{fakeResponse}
-\alias{fakeDownload}
 \title{Return something that looks enough like an httr 'response'}
 \usage{
-fakeResponse(url = "", verb = "GET", status_code = 200,
-  headers = list(), content = NULL)
-
-fakeDownload(url, destfile, ...)
+fakeResponse(request, verb = "GET", status_code = 200, headers = list(),
+  content = NULL)
 }
 \arguments{
-\item{url}{A character URL for the request. For \code{fakeDownload}, this
-should be a path to a file that exists.}
+\item{request}{An 'httr' \code{request}-class object. A character URL is also
+accepted, for which a fake request object will be created, using the \code{verb}
+argument as well. This behavior is deprecated.}
 
-\item{verb}{Character name for the HTTP verb. Default is "GET"}
+\item{verb}{Character name for the HTTP verb. Default is "GET". This argument
+is deprecated; instead you should pass in a \code{request}}
 
 \item{status_code}{Integer HTTP response status}
 
@@ -24,16 +23,9 @@ should be a path to a file that exists.}
 as response content with Content-Type: application/json. If no \code{content}
 is provided, and if the \code{status_code} is not 204 No Content, the
 \code{url} will be set as the response content with Content-Type: text/plain.}
-
-\item{destfile}{For \code{fakeDownload}, character file path to "download"
-to. \code{fakeDownload} will copy the file at \code{url} to this path.}
-
-\item{...}{Additional arguments for \code{fakeDownload}}
 }
 \value{
-The fake verbs return a 'httr' response class object.
-\code{fakeDownload} returns 0, the success code returned by
-\code{\link[utils:download.file]{utils::download.file()}}.
+An 'httr' response class object.
 }
 \description{
 These functions allow mocking of HTTP requests without requiring an internet

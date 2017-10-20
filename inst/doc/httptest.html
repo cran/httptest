@@ -17,7 +17,45 @@ window.onload = function() {
 };
 </script>
 
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
 
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
 
 
 
@@ -173,9 +211,9 @@ hr {
 
 <p>Testing code and packages that communicate with remote servers can be painful. Dealing with authentication, bootstrapping server state, cleaning up objects that may get created during the test run, network flakiness, and other complications can make testing seem too costly to bother with. But it doesn&#39;t need to be that hard. The <code>httptest</code> package lets you test R code that constructs API requests and handles their responses, all without requiring access to the remote service during the test run. This makes tests easy to write and fast to run.</p>
 
-<p><code>httptest</code> sits on top of the <a href="https://github.com/hadley/testthat">testthat</a> package and provides test <strong>contexts</strong> that mock the network connection. These let you supply mock API responses for some requests and allow you to assert that HTTP requests were—or were not—made using custom <strong>expectation</strong> functions. The package further includes tools for recording the responses of real requests and storing them as fixtures that you can later load in a test run. Taken together, <code>httptest</code> lets you test that your code is making the intended requests and that it handles the expected responses correctly without depending on a connection to a remote API.</p>
+<p><code>httptest</code> sits on top of the <a href="http://testthat.r-lib.org/">testthat</a> package and provides test <strong>contexts</strong> that mock the network connection. These let you supply mock API responses for some requests and allow you to assert that HTTP requests were—or were not—made using custom <strong>expectation</strong> functions. The package further includes tools for recording the responses of real requests and storing them as fixtures that you can later load in a test run. Taken together, <code>httptest</code> lets you test that your code is making the intended requests and that it handles the expected responses correctly without depending on a connection to a remote API.</p>
 
-<p>This vignette covers some of the core features of the <code>httptest</code> package, focusing on how to mock HTTP responses, how to make other assertions about requests, and how to record real requests for future use as mocks. Note that <code>httptest</code> requires the <code>testthat</code> package, and it follows the testing conventions and interfaces defined there, extending them with some additional wrappers and expectations. If you&#39;re not familiar with <code>testthat</code>, see the <a href="http://r-pkgs.had.co.nz/tests.html">&ldquo;Testing&rdquo; chapter</a> chapter of Hadley Wickham&#39;s <em>R Packages</em> book. Furthermore, <code>httptest</code> is designed for use with packages that rely on the <a href="https://github.com/hadley/httr">httr</a> requests library—it is a bridge between <code>httr</code> and <code>testthat</code>.</p>
+<p>This vignette covers some of the core features of the <code>httptest</code> package, focusing on how to mock HTTP responses, how to make other assertions about requests, and how to record real requests for future use as mocks. Note that <code>httptest</code> requires the <code>testthat</code> package, and it follows the testing conventions and interfaces defined there, extending them with some additional wrappers and expectations. If you&#39;re not familiar with <code>testthat</code>, see the <a href="http://r-pkgs.had.co.nz/tests.html">&ldquo;Testing&rdquo; chapter</a> chapter of Hadley Wickham&#39;s <em>R Packages</em> book. Furthermore, <code>httptest</code> is designed for use with packages that rely on the <a href="http://httr.r-lib.org/">httr</a> requests library—it is a bridge between <code>httr</code> and <code>testthat</code>.</p>
 
 <h1>The <code>with_mock_API</code> context</h1>
 
@@ -183,22 +221,22 @@ hr {
 
 <h2>Example</h2>
 
-<p>To illustrate the power of <code>with_mock_API</code>, let&#39;s try to add tests to an R package that wraps a prominent web API. The <code>twitteR</code> package is quite popular (<a href="https://cranlogs.r-pkg.org/badges/twitteR">13k downloads per month</a>), but like most R packages, it doesn&#39;t have a test suite. Indeed, it is hard to test the querying of an API that requires OAuth authentication, and thus a user account to use in testing. That&#39;s tricky to set up to run locally, and even more challenging to run on a continuous-integration service like Travis-CI. But <code>httptest</code> can help.</p>
+<p>To illustrate the power of <code>with_mock_API</code>, let&#39;s try to add tests to an R package that wraps a prominent web API. The <code>twitteR</code> package is quite popular (<a href="https://cranlogs.r-pkg.org/badges/twitteR">13k downloads per month</a>, at the time of writing), but like most R packages, it doesn&#39;t have a test suite. Indeed, it is hard to test the querying of an API that requires OAuth authentication, and thus a user account to use in testing. That&#39;s tricky to set up to run locally, and even more challenging to run on a continuous-integration service like Travis-CI. But <code>httptest</code> can help.</p>
 
 <p>First, we need to set up some boilerplate for <code>testthat</code> testing, which <code>httptest</code> uses. Add a &ldquo;tests&rdquo; directory, and in that, a &ldquo;testthat.R&rdquo; with</p>
 
-<pre><code>library(httptest)
+<pre><code class="r">library(httptest)
 test_check(&quot;twitteR&quot;)
 </code></pre>
 
 <p>Note that it says <code>library(httptest)</code> instead of the <code>library(testthat)</code> that you would otherwise use with <code>testthat</code>. Next, let&#39;s add a &ldquo;testthat&rdquo; directory to hold our test files. In that directory, we&#39;ll start with a &ldquo;helper.R&rdquo; file for common setup code. From some experimenting, it&#39;s clear that the package checks to see if you have an OAuth token set. We&#39;re not actually going to hit the real Twitter API, so we don&#39;t need a valid token—we just need a token to exist so the R code that looks for a token finds one:</p>
 
-<pre><code>use_oauth_token(&quot;foo&quot;)
+<pre><code class="r">use_oauth_token(&quot;foo&quot;)
 </code></pre>
 
 <p>Now let&#39;s write a test. Add &ldquo;test-user.R&rdquo; and put a test for getting a user record, via the <code>getUser</code> function. According to the source code, this function should hit the &ldquo;show user&rdquo; Twitter API, documented <a href="https://dev.twitter.com/rest/reference/get/users/show">here</a>. But, we&#39;re going to prevent that request from actually happening by wrapping our test in the <code>with_mock_API</code>.</p>
 
-<pre><code>context(&quot;Get a user&quot;)
+<pre><code class="r">context(&quot;Get a user&quot;)
 
 with_mock_API({
     test_that(&quot;We can get a user object&quot;, {
@@ -231,7 +269,7 @@ simplified, more readable alternative.</p>
 
 <p>Back to the <code>getUser</code> example. The error message tells us that the request it is making—<code>GET https://api.twitter.com/1.1/users/show.json?screen_name=twitterdev</code>—is what we should expect based on the API documentation, so that&#39;s good. Now let&#39;s provide a mock response. The API documentation page has an example JSON response, which looks like</p>
 
-<pre><code>{
+<pre><code class="json">{
   &quot;id&quot;: 2244994945,
   &quot;id_str&quot;: &quot;2244994945&quot;,
   &quot;name&quot;: &quot;TwitterDev&quot;,
@@ -243,11 +281,12 @@ simplified, more readable alternative.</p>
       to all of them!&quot;,
   &quot;url&quot;: &quot;https://t.co/66w26cua1O&quot;,
   ...
+}
 </code></pre>
 
 <p>Let&#39;s copy that example response to the fixture file path that the message indicated, <code>api.twitter.com/1.1/users/show.json-84627b.json</code>. When we run the tests again, there&#39;s no more error. Great! This means that <code>with_mock_API</code> loaded our mock when it reached the GET request, and the rest of the code continued executing. <code>getUser</code> returns a &ldquo;user&rdquo; object, so let&#39;s now assert some things about it and test some of its methods:</p>
 
-<pre><code>test_that(&quot;We can get a user object&quot;, {
+<pre><code class="r">test_that(&quot;We can get a user object&quot;, {
     user &lt;- getUser(&quot;twitterdev&quot;)
     expect_is(user, &quot;user&quot;)
     expect_identical(user$name, &quot;TwitterDev&quot;)
@@ -257,7 +296,7 @@ simplified, more readable alternative.</p>
 
 <p>We can do the same for the <code>lookupUsers</code> function. It should hit the <code>users/lookup.json</code> endpoint and the function should return a list of <code>user</code> objects:</p>
 
-<pre><code>test_that(&quot;lookupUsers retrieves many&quot;, {
+<pre><code class="r">test_that(&quot;lookupUsers retrieves many&quot;, {
     result &lt;- lookupUsers(c(&quot;twitterapi&quot;, &quot;twitter&quot;))
     expect_is(result, &quot;list&quot;)
     expect_true(all(vapply(result, inherits, logical(1), what=&quot;user&quot;)))
@@ -282,7 +321,7 @@ simplified, more readable alternative.</p>
 
 <p>The full test code looks like this:</p>
 
-<pre><code>context(&quot;Get a user&quot;)
+<pre><code class="r">context(&quot;Get a user&quot;)
 
 use_oauth_token(&quot;foo&quot;) # Pulled here from helper.R for clarity
 
@@ -315,7 +354,7 @@ those mocks, running your tests in <code>with_mock_API</code>.</p>
 
 <p>We could do something like</p>
 
-<pre><code>start_capturing()
+<pre><code class="r">start_capturing()
 searchTwitter(&quot;#rstats&quot;)
 stop_capturing()
 </code></pre>
@@ -332,7 +371,7 @@ stop_capturing()
 
 <p>By having mocks in human-readable text files, you can also more easily extend your code. APIs are living things that evolve over time, and your code that communicates with an API needs to be able to change with them. If the API adds an additional attribute to an object, no big deal: just touch up the mocks. In addition, you can future-proof your code against that kind of API change by tweaking a fixture file. In <a href="https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34">this example</a> from the <code>crunch</code> package, an extra, nonsense attribute was added to the JSON just to ensure that the code doesn&#39;t break if there are new, unknown features added to the API response. That way, if the API grows new features, people who are using your package don&#39;t get errors if they haven&#39;t upgraded to the latest release that recognizes the new feature.</p>
 
-<p>If you&#39;re responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the <a href="https://github.com/Crunch-io/rcrunch/">crunch</a> package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:</p>
+<p>If you&#39;re responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the <a href="http://crunch.io/r/crunch/">crunch</a> package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:</p>
 
 <pre><code>app.crunch.io/
 ├── api
@@ -383,9 +422,9 @@ elements: the request
 method (e.g. &ldquo;GET&rdquo;), the request URL, and the request body, if present. The verb-expectation functions,
 such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shape.</p>
 
-<p>Here&#39;s a example of how <code>without_internet</code> can be used to assert that code that should not make network requests in fact does not. This is a simplified version of a test from the <a href="https://github.com/nealrichardson/httpcache">httpcache</a> package, a library that implements a query cache for HTTP requests in R. The point of the query cache is that only the first time you make a certain GET request should it hit the remote API; subsequent requests should read from the cache and not make a request. The test first makes a request (artificially, using <code>with_fake_HTTP</code>, the third test context the package provides) to prime the cache.</p>
+<p>Here&#39;s a example of how <code>without_internet</code> can be used to assert that code that should not make network requests in fact does not. This is a simplified version of a test from the <a href="http://enpiar.com/r/httpcache">httpcache</a> package, a library that implements a query cache for HTTP requests in R. The point of the query cache is that only the first time you make a certain GET request should it hit the remote API; subsequent requests should read from the cache and not make a request. The test first makes a request (artificially, using <code>with_fake_HTTP</code>, the third test context the package provides) to prime the cache.</p>
 
-<pre><code>with_fake_HTTP({
+<pre><code class="r">with_fake_HTTP({
     test_that(&quot;Cache gets set on GET&quot;, {
         expect_length(cacheKeys(), 0)
         expect_GET(a &lt;- GET(&quot;https://app.crunch.io/api/&quot;),
@@ -398,7 +437,7 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 
 <p>Then, using <code>without_internet</code>, the test checks two things: first, that doing the same GET succeeds because it reads from cache; and second, that if you bypass the query cache, you get an error because you tried to make a network request.</p>
 
-<pre><code>without_internet({
+<pre><code class="r">without_internet({
     test_that(&quot;When the cache is set, can read from it even with no connection&quot;, {
         expect_identical(GET(&quot;https://app.crunch.io/api/&quot;)$url,
             &quot;https://app.crunch.io/api/&quot;)
@@ -418,14 +457,14 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 
 <p>Both <code>without_internet</code> and <code>with_mock_API</code> allow you to make assertions about requests—method, URL, and payload—that should be made. The various <code>expect_VERB</code> expectation functions facilitate this testing. In this example from the <code>crunch</code> package, inside the <code>with_mock_API</code> context, there is a catalog resource containing three entities, each of which has an &ldquo;archived&rdquo; attribute. The <code>is.archived</code> method returns the value of that attribute:</p>
 
-<pre><code>test_that(&quot;is.archived&quot;, {
+<pre><code class="r">test_that(&quot;is.archived&quot;, {
     expect_identical(is.archived(catalog), c(FALSE, TRUE, FALSE))
 })
 </code></pre>
 
 <p>When we update the attributes of the catalog&#39;s entities, we send a PATCH request, and we only want to send values that are changing. That way, we don&#39;t unintentionally collide with any other concurrent actions happening on the server, and we can send smaller messages, which should be faster. In this example, if we were to set &ldquo;archived&rdquo; to <code>TRUE</code> for the second and third elements of the catalog, we&#39;d only want to send a PATCH request that referenced the third element because the second one is already <code>TRUE</code>.</p>
 
-<pre><code>test_that(&quot;&#39;archive&#39; sets the archived attribute and only PATCHes changes&quot;, {
+<pre><code class="r">test_that(&quot;&#39;archive&#39; sets the archived attribute and only PATCHes changes&quot;, {
     expect_PATCH(archive(catalog[2:3]),
         &#39;https://app.crunch.io/api/datasets/&#39;,
         &#39;{&quot;https://app.crunch.io/api/datasets/3/&quot;:{&quot;archived&quot;:true}}&#39;)
@@ -438,7 +477,7 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 
 <p>An example of this from the <code>crunch</code> package is in testing a <code>join</code> function, which has a similar syntax to the base R <code>merge</code> function. <code>merge</code> takes &ldquo;by.x&rdquo; and &ldquo;by.y&rdquo; arguments, which point to the variables in the &ldquo;x&rdquo; and &ldquo;y&rdquo; data.frames on which to match the rows when merging. It has a shortcut for the case where the variable have the same names in both data.frame, in which case you can just specify a &ldquo;by&rdquo; argument. To test that all of those combinations of specifying join keys result in the same request, the test defines a payload string to reuse</p>
 
-<pre><code>testPayload &lt;- paste0(
+<pre><code class="r">testPayload &lt;- paste0(
     &#39;{&quot;https://app.crunch.io/api/datasets/1/joins/95c0b45fe0af492594863f818cb913d2/&quot;:&#39;,
     &#39;{&quot;left_key&quot;:&quot;https://app.crunch.io/api/datasets/1/variables/birthyr/&quot;,&#39;,
     &#39;&quot;right_key&quot;:&quot;https://app.crunch.io/api/datasets/3/variables/birthyr/&quot;}}&#39;)
@@ -446,7 +485,7 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 
 <p>and then asserts that three different ways of calling <code>join</code> result in the same <code>PATCH</code> request being made</p>
 
-<pre><code>test_that(&quot;Can specify &#39;by&#39; variables several ways&quot;, {
+<pre><code class="r">test_that(&quot;Can specify &#39;by&#39; variables several ways&quot;, {
     expect_PATCH(join(ds1, ds2, by.x=ds1$birthyr, ds2$birthyr),
         &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
         testPayload)
@@ -463,7 +502,7 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 
 <h1>Just test it</h1>
 
-<p>The goal of <code>httptest</code> is to remove a big obstacle to testing code that communicates with HTTP services: the HTTP service itself. If <a href="https://github.com/hadley/httr/blob/master/R/httr.r#L1"><code>httr</code> makes HTTP easy</a> and <a href="https://github.com/hadley/testthat/blob/master/R/test-that.R#L171"><code>testthat</code> makes testing fun</a>, <code>httptest</code> makes testing your code that uses HTTP a simple pleasure.</p>
+<p>The goal of <code>httptest</code> is to remove a big obstacle to testing code that communicates with HTTP services: the HTTP service itself. If <a href="https://github.com/r-lib/httr/blob/master/R/httr.r#L1"><code>httr</code> makes HTTP easy</a> and <a href="https://github.com/r-lib/testthat/blob/master/R/test-that.R#L171"><code>testthat</code> makes testing fun</a>, <code>httptest</code> makes testing your code that uses HTTP a simple pleasure.</p>
 
 </body>
 

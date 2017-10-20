@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Redacting Sensitive Information from Recorded Requests</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<!--
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Redacting Sensitive Information from Recorded Requests}
+%\VignetteEncoding{UTF-8}
+-->
+
+<h1>Redacting Sensitive Information from Recorded Requests</h1>
+
+<p><code>httptest</code> makes it easy for you to write tests that don&#39;t require a network connection. With <code>capture_requests()</code>, you can record responses from real requests so that you can use them later in tests. A further benefit of testing with mocks is that you don&#39;t have to deal with authentication and authorization on the server in your tests&mdash;you don&#39;t need to supply real login credentials for your test suite to run. You can have full test coverage of your code, both on public continuous-integration services like Travis-CI and when you submit packages to CRAN, all without having to publish secret tokens or passwords.</p>
+
+<p>It is important to ensure that the mocks you include in your test suite do not inadvertently reveal private information as well. For many requests and responses, the default behavior of <code>capture_requests</code> is to write out only the response body, which makes for clean, easy-to-read test fixtures. For other responses, however&mdash;those returning non-JSON content or an error status&mdash;it writes a <code>.R</code> file containing a <code>httr</code> &ldquo;response&rdquo; object. This response contains all of the headers and cookies that the server returns, and it also has a copy of your &ldquo;request&rdquo; object, with the headers, tokens, and other configuration you sent to the server. If not addressed, this would mean that you might be exposing your personal credentials publicly.</p>
+
+<p>Starting in version 2.2.0, <code>httptest</code> provides a framework for sanitizing the responses that <code>capture_requests</code> records. By default, it redacts the standard ways that auth credentials are passed in requests: cookies, authorization headers, and basic HTTP auth. The framework is extensible and allows you to specify custom redaction policies that match how your API accepts and returns sensitive information. Common redacting functions are configurable and natural to adapt to your needs, while the workflow also supports custom redacting functions that can alter the recorded requests however you want, including altering the response content and URL.</p>
+
+<h2>Default: redact standard auth methods</h2>
+
+<p>By default, the <code>capture_requests</code> context evaluates the <code>redact_auth()</code> function on a response object before writing it to disk. <code>redact_auth</code> wraps a few smaller redacting functions that (1) sanitize any cookies in the request and response; (2) redact common headers including &ldquo;Authorization&rdquo;, if present; and (3) if using basic HTTP authentication with username and password, removes those credentials.</p>
+
+<p>What does &ldquo;redacting&rdquo; entail? We aren&#39;t the CIA working with classified reports, taking a heavy black marker over certain details. In our case, redacting means replacing the sensitive content with the string &ldquo;REDACTED&rdquo;. Your recorded responses will be as &ldquo;real&rdquo; as possible: if, for example, you have an &ldquo;Authorization&rdquo; header in your request, the header will remain in your test fixture, but real token value will be replaced with &ldquo;REDACTED&rdquo;. And only the recorded responses will be affected&mdash;the actual response you&#39;re capturing in your active R session is not modified, only the mock that is written out.</p>
+
+<p>To illustrate, if you make a request that includes a cookie, that cookie will also be included in the <code>response</code> object that is returned.</p>
+
+<pre><code class="r">capture_requests(simplify=FALSE, {
+    real_resp &lt;- GET(&quot;http://httpbin.org/cookies&quot;, set_cookies(token=&quot;12345&quot;))
+})
+real_resp$request$options$cookie
+
+## [1] &quot;token=12345&quot;
+</code></pre>
+
+<p>But when we load that recorded response in tests later, the cookie won&#39;t appear because it was redacted:</p>
+
+<pre><code class="r">with_mock_API({
+    alt_resp &lt;- GET(&quot;http://httpbin.org/cookies&quot;, set_cookies(token=&quot;12345&quot;))
+})
+alt_resp$request$options$cookie
+
+## [1] &quot;REDACTED&quot;
+</code></pre>
+
+<p>(Side note: the example uses the <code>simplify=FALSE</code> option to <code>capture_requests</code> for illustration purposes. With the default <code>simplify=TRUE</code>, only the response body would be written to a mock file because this particular GET request returns JSON content. Thus, there would be no cookie present anyway. <code>simplify=FALSE</code> forces <code>capture_requests</code> to write the verbose .R response object file for every request, not just those that don&#39;t return JSON content.)</p>
+
+<h2>Handling other auth methods</h2>
+
+<p>Some APIs use other methods for passing credentials. For example, the <a href="https://www.pivotaltracker.com/help/api">API for Pivotal Tracker</a>, the agile project management tool, uses a &ldquo;X-TrackerToken&rdquo; request header for passing an API token. Our standard redactor doesn&#39;t know about this header, so by default, this token would be written in our recorded responses.</p>
+
+<p>So, in the <a href="https://github.com/nealrichardson/pivotaltrackR">pivotaltrackR</a> package, which wraps this API, if we want to record mocks to use in tests with this API, we need to tell <code>capture_requests</code> to scrub its special header. To do this, we&#39;ll set <code>redact=redact_headers(&quot;X-TrackerToken&quot;)</code> in the capture call.</p>
+
+<p>To illustrate, here&#39;s a recording of a GET on the <code>stories/</code> endpoint. We can see that the real token is included in the &ldquo;X-TrackerToken&rdquo; header in the real request:</p>
+
+<pre><code class="r">library(httptest)
+library(pivotaltrackR)
+options(pivotal.project=&quot;my-project-name&quot;, pivotal.token=&quot;8fe3452ac4e3&quot;)
+
+capture_requests(redact=redact_headers(&quot;X-TrackerToken&quot;), simplify=FALSE, {
+    active_stories &lt;- getStories(state=&quot;started&quot;)
+})
+active_stories$request$headers
+
+##                                                   Accept
+##       &quot;application/json, text/xml, application/xml, */*&quot;
+##                                               user-agent
+## &quot;libcurl/7.51.0 curl/2.3 httr/1.2.1 pivotaltrackR/0.1.0&quot;
+##                                           X-TrackerToken
+##                                           &quot;8fe3452ac4e3&quot;
+</code></pre>
+
+<p>Because we set <code>redact_headers(&quot;X-TrackerToken&quot;)</code> as the redactor, it should have been removed from the mock file that was written out. Let&#39;s read in that file and inspect it.</p>
+
+<pre><code class="r">mockfile &lt;- &quot;www.pivotaltracker.com/services/v5/projects/my-project-name/stories-c0a029.R&quot;
+mock &lt;- source(mockfile)$value
+mock$request$headers
+
+##                                                   Accept
+##       &quot;application/json, text/xml, application/xml, */*&quot;
+##                                               user-agent
+## &quot;libcurl/7.51.0 curl/2.3 httr/1.2.1 pivotaltrackR/0.1.0&quot;
+##                                           X-TrackerToken
+##                                               &quot;REDACTED&quot;
+</code></pre>
+
+<p>The actual token was removed, and in its place is the string &ldquo;REDACTED&rdquo;. I am now safe to commit this mock file to my repository and publish it without exposing my real credentials.</p>
+
+<h2>Writing custom redacting functions</h2>
+
+<p>Sensitive or personal information can also found in other parts of the request and response. Sometimes personal identifiers are built into URLs or response bodies. These may be less sensitive than auth tokens, but you probably want to conceal or anonymize your data that is included in test fixtures.</p>
+
+<p>Redacting functions can help with this personal information as well. You can use redactors on any part of the response object, not just the headers and cookies. A redactor is just a function that takes a response as input and returns a response object, so anything is possible if you write a custom redactor.</p>
+
+<p>Keeping with the <code>pivotaltrackR</code> example, note that the Pivotal project id, stored in <code>options(pivotal.project)</code> in the R session, appears in the mock file path. It&#39;s in the file path because it&#39;s in the request URL, and it turns out that many API responses also include it in the response body. We&#39;d rather not have that information leak in our test fixtures, so let&#39;s write a function to remove it.</p>
+
+<p>All of the redactors we&#39;ve seen here functions that take the &ldquo;response&rdquo; object as their only argument and return the response object modified in some way. In the previous step, we passed as our redactor <code>redact_headers(&quot;X-TrackerToken&quot;)</code>; this worked because <code>redact_headers</code> itself is not a redactor but rather a function that returns a redacting function. When evaluated, <code>redact_headers(&quot;X-TrackerToken&quot;)</code> returns a <code>function (response) ...</code> that is called on the response.</p>
+
+<p>We&#39;ll start our custom redactor with that header purging, then do some more work, and then return the response:</p>
+
+<pre><code class="r">redact_pivotal &lt;- function (response) {
+    response &lt;- redact_headers(&quot;X-TrackerToken&quot;)(response)
+    ...
+    return(response)
+}
+</code></pre>
+
+<p>What is that &ldquo;more work&rdquo; we want to do? Let&#39;s say that we want to replace my project id with &ldquo;123&rdquo; everywhere it is found, both in the URL and in the response body. Let&#39;s start by defining a function that takes a string value and does that replacement, and then we can apply it everywhere. To remove the project id from the response body, we can use the helper <code>within_body_text</code>, which takes as its argument a function and returns a redactor (which we then evaluate on &ldquo;response&rdquo;). <code>within_body_text</code> is helpful because <code>response</code> objects have their &ldquo;content&rdquo; stored as raw binary vectors, and it handles the <code>rawToChar</code>/<code>charToRaw</code> wrapping so that you don&#39;t have to remember to deal with that.</p>
+
+<pre><code class="r">redact_pivotal &lt;- function (response) {
+    redact_pivotal_token &lt;- redact_headers(&quot;X-TrackerToken&quot;)
+    # Function that replaces my project id in a given string
+    remove_project &lt;- function (x) gsub(getOption(&quot;pivotal.project&quot;), &quot;123&quot;, x)
+    remove_project_from_body &lt;- within_body_text(remove_project)
+
+    # Remove token from special header
+    response &lt;- redact_pivotal_token(response)
+    # Remove from URL--note that it appears twice!
+    response$url &lt;- remove_project(response$url)
+    response$request$url &lt;- remove_project(response$request$url)
+    # Now remove from the response body
+    response &lt;- remove_project_from_body(response)
+    return(response)
+}
+</code></pre>
+
+<p>To see this in action, let&#39;s record a request:</p>
+
+<!-- show the output -->
+
+<pre><code class="r">start_capturing(redact=redact_pivotal)
+s &lt;- getStories(search=&quot;mnt&quot;)
+stop_capturing()
+</code></pre>
+
+<p>Note that the actual project id appears in the data returned from the search.</p>
+
+<pre><code class="r">s[[1]]$project_id
+## [1] &quot;my-project-name&quot;
+</code></pre>
+
+<p>However, the project id won&#39;t be found in the recorded file. If we load the recorded response in <code>with_mock_API</code>, we&#39;ll see the value we substituted in:</p>
+
+<pre><code class="r">with_mock_API({
+    s &lt;- getStories(search=&quot;mnt&quot;)
+})
+s[[1]]$project_id
+## [1] &quot;123&quot;
+</code></pre>
+
+<p>Nor will the project id appear in the file path: since the redactor is evaluated before determining the file path to write to, if you alter the response URL, the destination file path will be generated based on the modified URL. In this case, our mock is written to &ldquo;&hellip;/projects/123/stories-fb1776.json&rdquo;, not &ldquo;&hellip;/projects/my-project-name/stories-fb1776.json&rdquo;. This feature can be helpful not only for removing sensitive data from your mock files but also for helping you resolve any &ldquo;non-portable file paths&rdquo; errors that <code>R CMD check</code> throws. File paths in packages are required to be under 100 characters long in order to maintain compatibility with old file systems. When dealing with APIs that have long URLs, you may run into this limit. But in this example, by replacing &ldquo;my-project-name&rdquo; with &ldquo;123&rdquo;, we cut 12 characters from the mock file paths, which will help with this check requirement.</p>
+
+<p>Finally, an observation about how to incorporate custom redactors into your testing workflow. One way to build it in is to define the redactor in your <code>tests/testthat/helper.R</code> file, and then override <code>capture_requests</code> with a version that uses your redactor, like this:</p>
+
+<pre><code class="r">capture_requests &lt;- function (...) {
+    httptest::capture_requests(redact=redact_pivotal, ...)
+}
+</code></pre>
+
+<p>So whenever you record requests from within your test setup, the redaction is automatically applied.</p>
+
+</body>
+
+</html>

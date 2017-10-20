@@ -7,9 +7,10 @@
 \title{Collect API Responses as Mock Files}
 \usage{
 capture_requests(expr, path = .mockPaths()[1], simplify = TRUE,
-  verbose = FALSE)
+  verbose = FALSE, redact = redact_auth)
 
-start_capturing(path = .mockPaths()[1], simplify = TRUE, verbose = FALSE)
+start_capturing(path = .mockPaths()[1], simplify = TRUE, verbose = FALSE,
+  redact = redact_auth)
 
 stop_capturing()
 }
@@ -29,6 +30,13 @@ a .R file using \code{\link[base:dput]{base::dput()}}.}
 that is written when capturing requests containing the absolute path of the
 file. Useful for debugging if you're capturing but don't see the fixture
 files being written in the expected location. Default is \code{FALSE}.}
+
+\item{redact}{function to run to purge sensitive strings from the recorded
+response objects. It should take a \code{response}-class object as its argument
+and should return a cleansed \code{response} object. This allows you to remove
+certain request and response contents, such as authentication tokens, from
+the mocks that get written out. See \code{\link[=redact_auth]{redact_auth()}}, the default, for more
+details.}
 }
 \value{
 \code{capture_requests} returns the result of \code{expr}. \code{start_capturing}
@@ -60,7 +68,6 @@ capture_requests({
     GET("http://httpbin.org")
     GET("http://httpbin.org/response-headers",
         query=list(`Content-Type`="application/json"))
-    utils::download.file("http://httpbin.org/gzip", tempfile())
 })
 # Or:
 start_capturing()
@@ -68,7 +75,6 @@ GET("http://httpbin.org/get")
 GET("http://httpbin.org")
 GET("http://httpbin.org/response-headers",
     query=list(`Content-Type`="application/json"))
-utils::download.file("http://httpbin.org/gzip", tempfile())
 stop_capturing()
 }
 }

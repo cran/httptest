@@ -49,23 +49,6 @@ public({
                 '{"arg":true}')
             expect_DELETE(DELETE("api/"), "api/")
         })
-        test_that("File download copies the file", {
-            f <- tempfile()
-            dl <- download.file("api.json", f)
-            expect_equal(dl, 0)
-            expect_identical(readLines(f), readLines("api.json"))
-        })
-        test_that("File download with a URL", {
-            f2 <- tempfile()
-            dl <- download.file("http://example.com/get.json", f2)
-            expect_equal(dl, 0)
-            expect_identical(readLines(f2), readLines("example.com/get.json"))
-        })
-        test_that("File download if file doesn't exist", {
-            f2 <- tempfile()
-            expect_error(dl <- download.file("NOTAFILE", f2),
-                "DOWNLOAD NOTAFILE")
-        })
 
         test_that("mock API with http:// URL, not file path", {
             expect_GET(GET("http://httpbin.org/get"),
@@ -116,6 +99,11 @@ public({
                 normalizePath("helper.R"),
                 '", type = "text/plain")) ',
                 '(httpbin.org/post-78d84e-POST.json)')
+        })
+
+        test_that("Returned (JSON) mock response contains the actual request", {
+            a <- GET("api/", add_headers(`X-FakeHeader`="fake_value"))
+            expect_true("X-FakeHeader" %in% names(a$request$headers))
         })
     })
 })

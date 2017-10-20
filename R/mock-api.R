@@ -22,7 +22,6 @@
 with_mock_API <- function (expr) {
     with_mock(
         `httr:::request_perform`=mockRequest,
-        `utils::download.file`=mockDownload,
         eval.parent(expr)
     )
 }
@@ -40,10 +39,9 @@ mockRequest <- function (req, handle, refresh) {
         } else {
             ## TODO: don't assume content-type
             headers <- list(`Content-Type`="application/json")
-            cont <- readBin(mockfile, "raw", 4096*32)
-            ## Assumes mock is under 128K       ^
-            resp <- fakeResponse(req$url, req$method, content=cont,
-                status_code=200L, headers=headers)
+            cont <- readBin(mockfile, "raw", n=file.size(mockfile))
+            resp <- fakeResponse(req, content=cont, status_code=200L,
+                headers=headers)
             return(resp)
         }
     }
@@ -127,10 +125,7 @@ buildMockURL <- function (req, method="GET") {
         f <- paste0(f, "-", hash(body))
     }
 
-    if (method == "DOWNLOAD") {
-        ## Don't append anything further.
-        return(f)
-    } else if (method != "GET") {
+    if (method != "GET") {
         ## Append method to the file name for non GET requests
         f <- paste0(f, "-", method)
     }
@@ -178,14 +173,3 @@ requestBody <- function (req) {
 }
 
 hash <- function (string, n=6) substr(digest(string), 1, n)
-
-mockDownload <- function (url, destfile, ...) {
-    f <- findMockFile(buildMockURL(url, method="DOWNLOAD"))
-    if (!is.null(f)) {
-        file.copy(f, destfile)
-        status <- 0
-        return(status)
-    } else {
-        stopDownload(url)
-    }
-}
