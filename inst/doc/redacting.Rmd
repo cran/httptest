@@ -1,10 +1,12 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Redacting Sensitive Information from Recorded Requests}
-%\VignetteEncoding{UTF-8}
--->
-
-# Redacting Sensitive Information from Recorded Requests
+---
+title: "Redacting Sensitive Information from Recorded Requests"
+description: "httptest provides a framework for sanitizing mocks recorded from real requests so that your tests don't reveal private tokens. By default, it redacts standard auth credentials, and it is extensible."
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Redacting Sensitive Information from Recorded Requests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 `httptest` makes it easy for you to write tests that don't require a network connection. With `capture_requests()`, you can record responses from real requests so that you can use them later in tests. A further benefit of testing with mocks is that you don't have to deal with authentication and authorization on the server in your tests---you don't need to supply real login credentials for your test suite to run. You can have full test coverage of your code, both on public continuous-integration services like Travis-CI and when you submit packages to CRAN, all without having to publish secret tokens or passwords.
 

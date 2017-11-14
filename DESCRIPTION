@@ -14,7 +14,7 @@ Description: Testing code and packages that communicate with remote servers can
     in tests. With these tools, one can test that code is making the intended
     requests and that it handles the expected responses correctly, all without
     depending on a connection to a remote API.
-Version: 2.3.2
+Version: 2.3.4
 Authors@R: person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com")
 URL: http://enpiar.com/r/httptest,
         https://github.com/nealrichardson/httptest
@@ -22,12 +22,12 @@ BugReports: https://github.com/nealrichardson/httptest/issues
 License: MIT + file LICENSE
 Depends: R (>= 3.0.0), testthat
 Imports: digest, httr, jsonlite
-Suggests: knitr, xml2
+Suggests: knitr, rmarkdown, xml2
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2017-10-20 03:57:08 UTC; neal.richardson
+Packaged: 2017-11-14 01:06:56 UTC; neal.richardson
 Author: Neal Richardson [aut, cre]
 Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-10-20 04:24:53 UTC
+Date/Publication: 2017-11-14 04:23:56 UTC

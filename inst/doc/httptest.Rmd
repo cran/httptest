@@ -1,10 +1,12 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{httptest: A Test Environment for HTTP Requests in R}
-%\VignetteEncoding{UTF-8}
--->
-
-# httptest: A Test Environment for HTTP Requests in R
+---
+title: "httptest: A Test Environment for HTTP Requests in R"
+description: "This vignette covers the core features of the httptest package, focusing on how to mock HTTP responses, how to make assertions about requests, and how to record real requests for future use as mocks."
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{httptest: A Test Environment for HTTP Requests in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r, results='hide', echo=FALSE, message=FALSE}
 options(width=120)
