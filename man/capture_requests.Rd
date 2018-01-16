@@ -4,13 +4,11 @@
 \alias{capture_requests}
 \alias{start_capturing}
 \alias{stop_capturing}
-\title{Collect API Responses as Mock Files}
+\title{Record API responses as mock files}
 \usage{
-capture_requests(expr, path = .mockPaths()[1], simplify = TRUE,
-  verbose = FALSE, redact = redact_auth)
+capture_requests(expr, path, ...)
 
-start_capturing(path = .mockPaths()[1], simplify = TRUE, verbose = FALSE,
-  redact = redact_auth)
+start_capturing(path, simplify = TRUE, verbose = FALSE, redact)
 
 stop_capturing()
 }
@@ -20,6 +18,8 @@ stop_capturing()
 \item{path}{Where to save the mock files. Default is the first directory in
 \code{\link[=.mockPaths]{.mockPaths()}}, which if not otherwise specified is the current working
 directory.}
+
+\item{...}{Arguments passed through \code{capture_requests} to \code{start_capturing}}
 
 \item{simplify}{logical: if \code{TRUE} (default), JSON responses with status 200
 will be written as just the text of the response body. In all other cases,
@@ -32,11 +32,8 @@ file. Useful for debugging if you're capturing but don't see the fixture
 files being written in the expected location. Default is \code{FALSE}.}
 
 \item{redact}{function to run to purge sensitive strings from the recorded
-response objects. It should take a \code{response}-class object as its argument
-and should return a cleansed \code{response} object. This allows you to remove
-certain request and response contents, such as authentication tokens, from
-the mocks that get written out. See \code{\link[=redact_auth]{redact_auth()}}, the default, for more
-details.}
+response objects. This argument is deprecated: use \code{\link[=set_redactor]{set_redactor()}} or a
+package redactor instead. See \code{vignette("redacting")} for more details.}
 }
 \value{
 \code{capture_requests} returns the result of \code{expr}. \code{start_capturing}
@@ -47,11 +44,12 @@ it is called for its side effects.
 \code{capture_requests} is a context that collects the responses from requests
 you make and stores them as mock files. This enables you to perform a series
 of requests against a live server once and then build your test suite using
-those mocks, running your tests in \code{\link[=with_mock_API]{with_mock_API()}}.
-\code{start_capturing} and \code{stop_capturing} allow you to turn on/off request
-recording for more convenient use in an interactive session.
+those mocks, running your tests in \code{\link[=with_mock_api]{with_mock_api()}}.
 }
 \details{
+\code{start_capturing} and \code{stop_capturing} allow you to turn on/off request
+recording for more convenient use in an interactive session.
+
 Mocks stored by this context are written out as plain-text files, either with
 extension \code{.json} if the request returned JSON content or with extension \code{.R}
 otherwise. The \code{.R} files contain syntax that when executed recreates the

@@ -1,4 +1,4 @@
-#' Make all HTTP requests return a fake 'response' object
+#' Make all HTTP requests return a fake response
 #'
 #' In this context, HTTP verb functions raise a 'message' so that test code can
 #' assert that the requests are made. As in [without_internet()], the message
@@ -14,10 +14,14 @@
 #' proceed with its response handling logic and itself be tested. The response
 #' it returns echoes back most of the request itself, similar to how some
 #' endpoints on \url{http://httpbin.org} do.
+#'
+#' In the interest of standardizing naming conventions, `with_fake_http()` is
+#' the preferred name for this context; `with_fake_HTTP()` is being deprecated.
+#'
 #' @param expr Code to run inside the fake context
 #' @return The result of `expr`
 #' @examples
-#' with_fake_HTTP({
+#' with_fake_http({
 #'     expect_GET(req1 <- httr::GET("http://example.com"), "http://example.com")
 #'     req1$url
 #'     expect_POST(req2 <- httr::POST("http://example.com", body='{"a":1}'),
@@ -26,15 +30,21 @@
 #' })
 #' @export
 #' @importFrom testthat expect_message
-with_fake_HTTP <- function (expr) {
-    with_mock(
-        `httr:::request_perform`=fakeRequest,
-        `httptest::request_happened`=expect_message,
-        eval.parent(expr)
-    )
+with_fake_http <- function (expr) {
+    old <- options(..httptest.request.errors=FALSE)
+    mock_perform(fake_request)
+    on.exit({
+        do.call(options, old)
+        stop_mocking()
+    })
+    eval.parent(expr)
 }
 
-#' Return something that looks enough like an httr 'response'
+#' @rdname with_fake_http
+#' @export
+with_fake_HTTP <- with_fake_http
+
+#' Return something that looks like an httr 'response'
 #'
 #' These functions allow mocking of HTTP requests without requiring an internet
 #' connection or server to run against. Their return shape is a 'httr'
@@ -43,9 +53,9 @@ with_fake_HTTP <- function (expr) {
 #'
 #' @param request An 'httr' `request`-class object. A character URL is also
 #' accepted, for which a fake request object will be created, using the `verb`
-#' argument as well. This behavior is deprecated.
-#' @param verb Character name for the HTTP verb. Default is "GET". This argument
-#' is deprecated; instead you should pass in a `request`
+#' argument as well.
+#' @param verb Character name for the HTTP verb, if `request` is a URL. Default
+#' is "GET".
 #' @param status_code Integer HTTP response status
 #' @param headers Optional list of additional response headers to return
 #' @param content If supplied, a JSON-serializable list that will be returned
@@ -56,10 +66,9 @@ with_fake_HTTP <- function (expr) {
 #' @export
 #' @importFrom jsonlite toJSON
 #' @importFrom utils modifyList
-fakeResponse <- function (request, verb="GET", status_code=200, headers=list(), content=NULL) {
+fake_response <- function (request, verb="GET", status_code=200, headers=list(), content=NULL) {
     if (is.character(request)) {
-        ## To-be-deprecated behavior of passing in a URL. Fake a request.
-        ## TODO: give deprecation warning
+        ## To-be-deprecated(?) behavior of passing in a URL. Fake a request.
         request <- structure(list(method=verb, url=request), class="request")
     }
     ## TODO: if the request says `write_disk`, should we copy the mock file to
@@ -91,15 +100,19 @@ fakeResponse <- function (request, verb="GET", status_code=200, headers=list(), 
     ), class="response")
 }
 
-fakeRequest <- function (req, handle, refresh) {
+#' @rdname fake_response
+#' @export
+fakeResponse <- fake_response
+
+fake_request <- function (req, handle, refresh) {
     out <- paste(req$method, req$url)
-    body <- requestBody(req)
+    body <- request_body(req)
     headers <- list(`Content-Type`="application/json") ## TODO: don't assume content-type
     status_code <- ifelse(is.null(body) && req$method != "GET", 204, 200)
     if (!is.null(body)) {
         out <- paste(out, body)
     }
     message(out)
-    return(fakeResponse(req, content=body, status_code=status_code,
+    return(fake_response(req, content=body, status_code=status_code,
         headers=headers))
 }

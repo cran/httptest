@@ -1,9 +1,10 @@
-#' Collect API Responses as Mock Files
+#' Record API responses as mock files
 #'
 #' `capture_requests` is a context that collects the responses from requests
 #' you make and stores them as mock files. This enables you to perform a series
 #' of requests against a live server once and then build your test suite using
-#' those mocks, running your tests in [with_mock_API()].
+#' those mocks, running your tests in [with_mock_api()].
+#'
 #' `start_capturing` and `stop_capturing` allow you to turn on/off request
 #' recording for more convenient use in an interactive session.
 #'
@@ -29,11 +30,9 @@
 #' file. Useful for debugging if you're capturing but don't see the fixture
 #' files being written in the expected location. Default is `FALSE`.
 #' @param redact function to run to purge sensitive strings from the recorded
-#' response objects. It should take a `response`-class object as its argument
-#' and should return a cleansed `response` object. This allows you to remove
-#' certain request and response contents, such as authentication tokens, from
-#' the mocks that get written out. See [redact_auth()], the default, for more
-#' details.
+#' response objects. This argument is deprecated: use [set_redactor()] or a
+#' package redactor instead. See `vignette("redacting")` for more details.
+#' @param ... Arguments passed through `capture_requests` to `start_capturing`
 #' @return `capture_requests` returns the result of `expr`. `start_capturing`
 #' invisibly returns the `path` it is given. `stop_capturing` returns nothing;
 #' it is called for its side effects.
@@ -55,74 +54,115 @@
 #' }
 #' @importFrom httr content
 #' @export
-capture_requests <- function (expr, path=.mockPaths()[1], simplify=TRUE,
-                              verbose=FALSE, redact=redact_auth) {
-    start_capturing(path, simplify, verbose, redact)
+capture_requests <- function (expr, path, ...) {
+    start_capturing(...)
     on.exit(stop_capturing())
-    eval.parent(expr)
+    where <- parent.frame()
+    if (!missing(path)) {
+        with_mock_path(path, eval(expr, where))
+    } else {
+        eval(expr, where)
+    }
 }
 
 #' @rdname capture_requests
 #' @export
-start_capturing <- function (path=.mockPaths()[1], simplify=TRUE, verbose=FALSE,
-                             redact=redact_auth) {
-    ## Use "substitute" so that "path" gets inserted. Code remains quoted.
+start_capturing <- function (path, simplify=TRUE, verbose=FALSE, redact) {
+    if (!missing(path)) {
+        ## Note that this changes state and doesn't reset it
+        .mockPaths(path)
+    } else {
+        path <- NULL
+    }
+
+    if (!missing(redact)) {
+        warning("The 'redact' argument to start_capturing() is deprecated. ",
+            "Use 'set_redactor()' instead.", call.=FALSE)
+        set_redactor(redact)
+    }
+
+    ## Use "substitute" so that args get inserted. Code remains quoted.
     req_tracer <- substitute({
         ## Get the value returned from the function, and sanitize it
-        .resp <- redact(returnValue())
-        ## Omit curl handle C pointer
-        .resp$handle <- NULL
-
-        ## Construct the mock file path
-        f <- file.path(path, buildMockURL(.resp$request))
-        dir.create(dirname(f), showWarnings=FALSE, recursive=TRUE)
-
-        ## Get the Content-Type
-        ct <- unlist(.resp$headers[tolower(names(.resp$headers)) == "content-type"])
-        is_json <- any(grepl("application/json", ct))
-        if (simplify && .resp$status_code == 200 && is_json) {
-            ## Squelch the "No encoding supplied: defaulting to UTF-8."
-            ## TODO: support other text content-types than JSON
-            cat(suppressMessages(content(.resp, "text")), file=f)
-        } else {
-            ## Dump an object that can be sourced
-
-            ## Change the file extension to .R
-            f <- sub("json$", "R", f)
-
-            ## If content is text, rawToChar it and dput it as charToRaw(that)
-            ## so that it loads correctly but is also readable
-            text_types <- c("application/json",
-                "application/x-www-form-urlencoded", "application/xml",
-                "text/csv", "text/html", "text/plain",
-                "text/tab-separated-values", "text/xml")
-            is_text <- length(ct) && any(unlist(strsplit(ct, "; ")) %in% text_types)
-            ## strsplit on ; because "charset" may be appended
-            if (is_text) {
-                ## Squelch the "No encoding supplied: defaulting to UTF-8."
-                cont <- suppressMessages(content(.resp, "text"))
-                .resp$content <- substitute(charToRaw(cont))
-            } else if (inherits(.resp$request$output, "write_disk")) {
-                ## Copy real file and substitute the response$content "path".
-                ## Note that if content is a text type, the above attempts to
-                ## make the mock file readable call `content()`, which reads
-                ## in the file that has been written to disk, so it effectively
-                ## negates the "download" behavior for the recorded response.
-                downloaded_file <- paste0(f, "-FILE")
-                file.copy(.resp$content, downloaded_file)
-                .resp$content <- structure(downloaded_file, class="path")
-            }
-            dput(.resp, file=f)
+        redactor <- get_current_redactor()
+        .resp <- redactor(returnValue())
+        f <- save_response(.resp, simplify=simplify)
+        if (isTRUE(getOption("httptest.verbose", verbose))) {
+            message("Writing ", normalizePath(f))
         }
-        if (verbose) message("Writing ", normalizePath(f))
-    }, list(path=path, simplify=simplify, verbose=verbose, redact=redact))
-    suppressMessages(trace("request_perform", exit=req_tracer, where=add_headers,
-        print=FALSE))
+    }, list(simplify=simplify, verbose=verbose))
+    for (verb in c("PUT", "POST", "PATCH", "DELETE", "VERB", "GET")) {
+        trace_httr(verb, exit=req_tracer, print=FALSE)
+    }
     invisible(path)
+}
+
+#' Write out a captured response
+#'
+#' @param response An 'httr' `response` object
+#' @param simplify logical: if `TRUE` (default), JSON responses with status 200
+#' will be written as just the text of the response body. In all other cases,
+#' and when `simplify` is `FALSE`, the "response" object will be written out to
+#' a .R file using [base::dput()].
+#' @return The character file name that was written out
+#' @export
+#' @keywords internal
+save_response <- function (response, simplify=TRUE) {
+    ## Construct the mock file path
+    mapped_file <- buildMockURL(response$request)
+    filename <- file.path(.mockPaths()[1], mapped_file)
+    dir.create(dirname(filename), showWarnings=FALSE, recursive=TRUE)
+
+    ## Omit curl handle C pointer, which doesn't serialize meaningfully
+    response$handle <- NULL
+
+    ## Get the Content-Type
+    ct <- unlist(response$headers[tolower(names(response$headers)) == "content-type"])
+    is_json <- any(grepl("application/json", ct))
+    if (simplify && response$status_code == 200 && is_json) {
+        ## Squelch the "No encoding supplied: defaulting to UTF-8."
+        ## TODO: support other text content-types than JSON
+        cat(suppressMessages(content(response, "text")), file=filename)
+    } else {
+        ## Dump an object that can be sourced
+
+        ## Change the file extension to .R
+        filename <- sub("json$", "R", filename)
+        mapped_file <- sub("json$", "R", mapped_file)
+
+        ## If content is text, rawToChar it and dput it as charToRaw(that)
+        ## so that it loads correctly but is also readable
+        text_types <- c("application/json",
+            "application/x-www-form-urlencoded", "application/xml",
+            "text/csv", "text/html", "text/plain",
+            "text/tab-separated-values", "text/xml")
+        is_text <- length(ct) && any(unlist(strsplit(ct, "; ")) %in% text_types)
+        ## strsplit on ; because "charset" may be appended
+        if (is_text) {
+            ## Squelch the "No encoding supplied: defaulting to UTF-8."
+            cont <- suppressMessages(content(response, "text"))
+            response$content <- substitute(charToRaw(cont))
+        } else if (inherits(response$request$output, "write_disk")) {
+            ## Copy real file and substitute the response$content "path".
+            ## Note that if content is a text type, the above attempts to
+            ## make the mock file readable call `content()`, which reads
+            ## in the file that has been written to disk, so it effectively
+            ## negates the "download" behavior for the recorded response.
+            downloaded_file <- paste0(filename, "-FILE")
+            file.copy(response$content, downloaded_file)
+            mapped_file <- paste0(mapped_file, "-FILE")
+            response$content <- substitute(structure(find_mock_file(mapped_file),
+                class="path"))
+        }
+        dput(response, file=filename)
+    }
+    return(filename)
 }
 
 #' @rdname capture_requests
 #' @export
 stop_capturing <- function () {
-    suppressMessages(untrace("request_perform", where=add_headers))
+    for (verb in c("GET", "PUT", "POST", "PATCH", "DELETE", "VERB")) {
+        safe_untrace(verb, add_headers)
+    }
 }

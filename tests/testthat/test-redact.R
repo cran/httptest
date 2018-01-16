@@ -2,9 +2,9 @@ context("Redaction")
 
 d <- tempfile()
 
-with_mock_API({
+with_mock_api({
     # redact_headers (in redact_auth)
-    capture_requests(simplify=FALSE, path=d, {
+    capture_while_mocking(simplify=FALSE, path=d, {
         a <- GET("api/", add_headers(`Authorization`="Bearer token"))
     })
     test_that("The response has the real request header", {
@@ -13,37 +13,34 @@ with_mock_API({
     test_that("But the mock file does not", {
         expect_false(any(grepl("Bearer token", readLines(file.path(d, "api.R")))))
     })
-    test_that("And when loading that .R mock, the redacted value doesn't appear", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
-        .mockPaths(d)
-        on.exit(options(httptest.mock.paths=NULL))
-        b <- GET("api/", add_headers(`Authorization`="Bearer token"))
-        expect_equal(b$request$headers[["Authorization"]], "REDACTED")
+    test_that("And the redacted .R mock can be loaded", {
+        with_mock_path(d, {
+            b <- GET("api/", add_headers(`Authorization`="Bearer token"))
+        })
+        expect_equal(content(b), content(a))
     })
 
     # redact_cookies from request
-    capture_requests(simplify=FALSE, path=d, {
+    capture_while_mocking(simplify=FALSE, path=d, {
         cooks <- GET("http://httpbin.org/cookies", set_cookies(token="12345"))
     })
     test_that("redact_cookies: the response has the cookie set in the request", {
         expect_identical(cooks$request$options$cookie, "token=12345")
     })
     test_that("redact_cookies removes cookies from request in the mock file", {
-        expect_false(any(grepl("token=12345",
-            readLines(file.path(d, "httpbin.org", "cookies.R")))))
-        expect_true(any(grepl("REDACTED",
-            readLines(file.path(d, "httpbin.org", "cookies.R")))))
+        cooksfile <- readLines(file.path(d, "httpbin.org", "cookies.R"))
+        expect_false(any(grepl("token=12345", cooksfile)))
+        expect_true(any(grepl("REDACTED", cooksfile)))
     })
-    test_that("And when loading that .R mock, the redacted value doesn't appear", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
-        .mockPaths(d)
-        on.exit(options(httptest.mock.paths=NULL))
-        cooksb <- GET("http://httpbin.org/cookies", set_cookies(token="12345"))
-        expect_equal(cooksb$request$options$cookie, "REDACTED")
+    test_that("And the redacted .R mock can be loaded", {
+        with_mock_path(d, {
+            cooksb <- GET("http://httpbin.org/cookies", set_cookies(token="12345"))
+        })
+        expect_equal(content(cooksb), content(cooks))
     })
 
     # redact_cookies from response
-    capture_requests(simplify=FALSE, path=d, {
+    capture_while_mocking(simplify=FALSE, path=d, {
         c2 <- GET("http://httpbin.org/cookies/set", query=list(token=12345))
     })
     test_that("redact_cookies: the response has the set-cookie in the response", {
@@ -65,17 +62,16 @@ with_mock_API({
             2)
     })
     test_that("And when loading that .R mock, the redacted value doesn't appear", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
-        .mockPaths(d)
-        on.exit(options(httptest.mock.paths=NULL))
-        c2b <- GET("http://httpbin.org/cookies/set", query=list(token=12345))
+        with_mock_path(d, {
+            c2b <- GET("http://httpbin.org/cookies/set", query=list(token=12345))
+        })
         expect_identical(c2b$all_headers[[1]]$headers[["set-cookie"]],
             "REDACTED")
         expect_identical(c2b$cookies$value, "REDACTED")
     })
 
     # another redact_cookies with POST example.com/login
-    capture_requests(simplify=FALSE, path=d, {
+    capture_while_mocking(simplify=FALSE, path=d, {
         login <- POST("http://example.com/login",
             body=list(username="password"), encode="json")
     })
@@ -96,38 +92,36 @@ with_mock_API({
             3)
     })
     test_that("And when loading that .R mock, the redacted value doesn't appear", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
-        .mockPaths(d)
-        on.exit(options(httptest.mock.paths=NULL))
-        loginb <- POST("http://example.com/login",
-            body=list(username="password"), encode="json")
+        with_mock_path(d, {
+            loginb <- POST("http://example.com/login",
+                body=list(username="password"), encode="json")
+        })
         expect_identical(loginb$all_headers[[1]]$headers[["set-cookie"]],
             "REDACTED")
         expect_identical(loginb$headers[["set-cookie"]], "REDACTED")
         expect_identical(loginb$cookies$value, "REDACTED")
     })
 
-    # redact_HTTP_auth from request
-    capture_requests(simplify=FALSE, path=d, {
+    # redact_http_auth from request
+    capture_while_mocking(simplify=FALSE, path=d, {
         pwauth <- GET("http://httpbin.org/basic-auth/user/passwd",
             authenticate("user", "passwd"))
     })
-    test_that("redact_HTTP_auth: the request has the user:pw set", {
+    test_that("redact_http_auth: the request has the user:pw set", {
         expect_identical(pwauth$request$options$userpwd, "user:passwd")
     })
-    test_that("redact_HTTP_auth removes user:pw from request in the mock file", {
+    test_that("redact_http_auth removes user:pw from request in the mock file", {
         expect_false(any(grepl("user:passwd",
             readLines(file.path(d, "httpbin.org", "basic-auth", "user", "passwd.R")))))
         expect_true(any(grepl("REDACTED",
             readLines(file.path(d, "httpbin.org", "basic-auth", "user", "passwd.R")))))
     })
-    test_that("And when loading that .R mock, the redacted value doesn't appear", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
-        .mockPaths(d)
-        on.exit(options(httptest.mock.paths=NULL))
-        pwauthb <- GET("http://httpbin.org/basic-auth/user/passwd",
-            authenticate("user", "passwd"))
-        expect_equal(pwauthb$request$options$userpwd, "REDACTED")
+    test_that("And the redacted .R mock can be loaded", {
+        with_mock_path(d, {
+            pwauthb <- GET("http://httpbin.org/basic-auth/user/passwd",
+                authenticate("user", "passwd"))
+        })
+        expect_equal(content(pwauthb), content(pwauth))
     })
 
     # redact oauth
@@ -137,18 +131,24 @@ with_mock_API({
         endpoint = oauth_endpoints("google"),
         credentials = list(access_token = "ofNoArms")
     )
-    capture_requests(simplify=FALSE, path=d, {
+    token$params$as_header <- TRUE
+    capture_while_mocking(simplify=FALSE, path=d, {
         oauth <- GET("api/object1/", config(token = token))
     })
     test_that("The response has the 'auth_token' object'", {
         expect_is(oauth$request$auth_token, "Token2.0")
     })
-    test_that("And when loading that .R mock, the 'auth_token' doesn't appear", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
-        .mockPaths(d)
-        on.exit(options(httptest.mock.paths=NULL))
-        oauthb <- GET("api/object1/", config(token = token))
-        expect_null(oauthb$request$auth_token)
+
+    test_that("But the mock doesn't have the auth_token", {
+        oauthfile <- readLines(file.path(d, "api", "object1.R"))
+        expect_true(any(grepl("REDACTED", oauthfile)))
+        expect_false(any(grepl("auth_token", oauthfile)))
+    })
+    test_that("And the .R mock can be loaded", {
+        with_mock_path(d, {
+            oauthb <- GET("api/object1/", config(token = token))
+        })
+        expect_equal(content(oauthb), content(oauth))
     })
 
     # Custom redacting function
@@ -157,18 +157,20 @@ with_mock_API({
         response$url <- response$request$url <- "http://example.com/fakeurl"
         # Proof that you can alter the response body
         cleaner <- function (x) gsub("loaded", "changed", x)
-        response <- within_body_text(cleaner)(response)
+        response <- within_body_text(response, cleaner)
         return(response)
     }
-    capture_requests(simplify=FALSE, path=d, redact=my_redactor, {
-        r <- GET("http://example.com/get")
-    })
+    expect_warning(
+        capture_while_mocking(simplify=FALSE, path=d, redact=my_redactor, {
+            r <- GET("http://example.com/get")
+        }),
+        "The 'redact' argument to start_capturing() is deprecated. Use 'set_redactor()' instead.", fixed=TRUE
+    )
     test_that("The real request is not affected by the redactor", {
         expect_identical(r$url, "http://example.com/get")
         expect_identical(content(r), list(loaded=TRUE))
     })
     test_that("But the mock file gets written to the modified path with altered content", {
-        skip_on_cran() ## They have a broken R-devel build that chokes on these
         options(httptest.mock.paths=d)  ## Do this way to make sure "." isn't in
                                         ## the search path. We're checking that
                                         ## the original request doesn't have a
@@ -179,5 +181,41 @@ with_mock_API({
             "http://example.com/get")
         expect_error(alt <- GET("http://example.com/fakeurl"), NA)
         expect_identical(content(alt), list(changed=TRUE))
+    })
+
+    a <- GET("api/", add_headers(`Authorization`="Bearer token"))
+    test_that("as.redactor", {
+        a1 <- redact_headers(a, "Authorization")
+        a2 <- prepare_redactor(~ redact_headers(., "Authorization"))(a)
+        expect_identical(a1, a2)
+        expect_identical(a1$request$headers[["Authorization"]], "REDACTED")
+    })
+
+    test_that("gsub_response", {
+        asub <- gsub_response(a, "api", "OTHER")
+        expect_identical(asub$url, "OTHER/")
+        expect_identical(asub$request$url, "OTHER/")
+        expect_identical(content(asub), list(value="OTHER/object1/"))
+    })
+
+    postcreds <- POST("http://example.com/login",
+        body=list(username="password"), encode="json")
+    test_that("gsub_response gets request body too", {
+        postcreds_sub <- gsub_response(postcreds, "password", "SECRET")
+        expect_identical(rawToChar(postcreds_sub$request$options$postfields),
+            '{"username":"SECRET"}')
+    })
+})
+
+with_fake_http({
+    test_that("gsub_request on non-JSON post fields", {
+        expect_PUT(
+            p <- PUT("http://httpbin.org/put",
+                body = list(x = "A string", string = "Something else")
+            )
+        )
+        psub <- gsub_response(p, "string", "SECRET")
+        expect_identical(psub$request$fields,
+            list(x = "A SECRET", SECRET = "Something else"))
     })
 })

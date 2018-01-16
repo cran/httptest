@@ -1,7 +1,7 @@
 context("Fake HTTP")
 
 public({
-    with_fake_HTTP({
+    with_fake_http({
         test_that("fakeGET", {
             expect_message(g <- GET("http://httpbin.org/get"),
                 "GET http://httpbin.org/get")
@@ -84,6 +84,18 @@ public({
     })
 })
 
-test_that("fakeResponse returns a valid enough response even if you give it just a URL", {
-    expect_is(fakeResponse("http://httpbin.org/get"), "response")
+test_that("fake_response returns a valid enough response even if you give it just a URL", {
+    expect_is(fake_response("http://httpbin.org/get"), "response")
+})
+
+test_that("fake_request gets covered directly (not just in tracer)", {
+    expect_is(fake_request(list(method="GET", url="http://httpbin.org/get")),
+        "response")
+    expect_is(fake_request(
+        list(
+            method="POST",
+            url="http://httpbin.org/get",
+            options=list(postfields=charToRaw("body"))
+        )),
+        "response")
 })
