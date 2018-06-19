@@ -53,17 +53,7 @@ mock_request <- function (req, handle, refresh) {
     f <- buildMockURL(get_current_requester()(req))
     mockfile <- find_mock_file(f)
     if (!is.null(mockfile)) {
-        if (grepl("\\.R$", mockfile)) {
-            ## It's a full "response". Source it.
-            return(source(mockfile)$value)
-        } else {
-            ## TODO: don't assume content-type
-            headers <- list(`Content-Type`="application/json")
-            cont <- readBin(mockfile, "raw", n=file.size(mockfile))
-            resp <- fake_response(req, content=cont, status_code=200L,
-                headers=headers)
-            return(resp)
-        }
+        return(load_response(mockfile, req))
     }
     ## Else: fail.
     ## For ease of debugging if a file isn't found, include it in the
@@ -77,45 +67,40 @@ mock_request <- function (req, handle, refresh) {
 #' Requests are translated to mock file paths according to several rules that
 #' incorporate the request method, URL, query parameters, and body.
 #'
-#' First, the URL is modified in two ways in order to allow it to map to a
-#' local file system. All mock files have the request protocol such as "http://"
-#' removed from the URL, and they also have a file extension appended. In an
+#' First, the request protocol, such as "https://", is removed from the URL.
+#' Second, if the request URL contains a query string, it will be popped off,
+#' hashed by [digest::digest()], and the first six characters appended to the
+#' file being read. Third, request bodies are similarly hashed and
+#' appended. Finally, if a request method other than GET is used it will be
+#' appended to the end of the end of the file name.
+#'
+#' Mock file paths also have a file extension appended, based on the
+#' `Content-Type` of the response, though this function, which is only concerned
+#' with the request, does not add the extension. In an
 #' HTTP API, a "directory" itself is a resource,
 #' so the extension allows distinguishing directories and files in the file
 #' system. That is, a mocked `GET("http://example.com/api/")` may read a
 #' "example.com/api.json" file, while
 #' `GET("http://example.com/api/object1/")` reads "example.com/api/object1.json".
 #'
-#' The extension also gives information on content type. Two extensions are
-#' currently supported: (1) .json and (2) .R. JSON mocks can be stored in .json
-#' files, and when they are loaded by [with_mock_api()], relevant request
-#' metadata (headers, status code, etc.) are inferred. If your API doesn't
-#' return JSON, or if you want to simulate requests with other behavior (201
-#' Location response, or 400 Bad Request, for example), you can store full
-#' `response` objects in .R files that `with_mock_api` will `source` to load.
-#' Any request can be stored as a .R mock, but the .json mocks offer a
-#' simplified, more readable alternative. ([capture_requests()] will record
-#' simplified .json files where appropriate and .R mocks otherwise by default.)
-#'
-#' Second, if the request URL contains a query string, it will be popped off,
-#' hashed by [digest::digest()], and the first six characters appended to the
-#' file being read. For example, `GET("api/object1/?a=1")` reads
-#' "api/object1-b64371.json". Third, request bodies are similarly hashed and
-#' appended. Finally, if a request method other than GET is used it will be
-#' appended to the end of the end of the file name. For example,
-#' `POST("api/object1/?a=1")` reads "api/object1-b64371-POST.json".
+#' Other examples:
+#' * `GET("http://example.com/api/object1/?a=1")` may read
+#' "example.com/api/object1-b64371.xml".
+#' * `POST("http://example.com/api/object1/?a=1")` may read
+#' "example.com/api/object1-b64371-POST.json".
 #'
 #' This function is exported so that other packages can construct similar mock
 #' behaviors or override specific requests at a higher level than
 #' `with_mock_api` mocks.
 #'
 #' In the interest of standardizing naming conventions, `build_mock_url()` is
-#' the preferred name for this context; `buildMockURL()` is being deprecated.
+#' the preferred name for this function; `buildMockURL()` is deprecated.
 #'
 #' @param req A `request` object, or a character "URL" to convert
 #' @param method character HTTP method. If `req` is a 'request' object,
 #' its request method will override this argument
-#' @return A file path and name, with .json extension. The file may or may not
+#' @return A file path and name, without an extension. The file, or a file with
+#' some extension appended, may or may not
 #' exist: existence is not a concern of this function.
 #' @importFrom digest digest
 #' @seealso [with_mock_api()] [capture_requests()]
@@ -153,9 +138,6 @@ build_mock_url <- function (req, method="GET") {
         ## Append method to the file name for non GET requests
         f <- paste0(f, "-", method)
     }
-
-    ## Add file extension
-    f <- paste0(f, ".json")  ## TODO: don't assume content-type
     return(f)
 }
 
@@ -171,22 +153,49 @@ buildMockURL <- build_mock_url
 #' @export
 find_mock_file <- function (file) {
     for (path in .mockPaths()) {
-        mockfile <- file.path(path, file)
-        if (file.exists(mockfile)) {
-            return(mockfile)
+        ## Look for files of any .extension in the indicated directory,
+        ## be they .R, .json, ...
+        mp <- file.path(path, file)
+        if (file.exists(mp) && !dir.exists(mp) && grepl("\\.", basename(mp))) {
+            ## With write_disk() downloading, 'file' may reference a specific
+            ## file and include the extension .R-FILE. So if that file exists,
+            ## no need to search for it. Just return it.
+            return(mp)
         }
-        ## Else, see if there is a .R file "response" with the same path
-        ## TODO: don't assume content-type
-        mockfile <- sub("\\.json$", ".R", mockfile)
-        if (file.exists(mockfile)) {
-            return(mockfile)
+        ## Turn the basename into a regular expression that will match it (and
+        ## only it) with any .extension
+        mockbasename <- paste0("^", basename(mp), ".[[:alnum:]]*$")
+        mockfiles <- dir(dirname(mp), pattern=mockbasename, all.files=TRUE,
+            full.names=TRUE)
+        ## Remove directories
+        mockfiles <- setdiff(mockfiles, list.dirs(dirname(mp), full.names=TRUE))
+        if (length(mockfiles)) {
+            ## TODO: check for length > 1
+            return(mockfiles[1])
         }
     }
     return(NULL)
 }
 
-## TODO: remove
-findMockFile <- find_mock_file
+#' @importFrom utils tail
+load_response <- function (file, req) {
+    ext <- tail(unlist(strsplit(file, ".", fixed=TRUE)), 1)
+    if (ext == "R") {
+        ## It's a full "response". Source it.
+        return(source(file)$value)
+    } else if (ext %in% names(EXT_TO_CONTENT_TYPE)) {
+        return(fake_response(
+            req,
+            content=readBin(file, "raw", n=file.size(file)),
+            status_code=200L,
+            headers=list(`Content-Type`=EXT_TO_CONTENT_TYPE[[ext]])
+        ))
+    } else if (ext == "204") {
+        return(fake_response(req, status_code=204L))
+    } else {
+        stop("Unsupported mock file extension: ", ext, call.=FALSE)
+    }
+}
 
 request_body <- function (req) {
     ## request_body returns a string if the request has a body, NULL otherwise

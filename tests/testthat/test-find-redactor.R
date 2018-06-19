@@ -5,13 +5,13 @@ expect_redactor <- function (expr) {
 }
 
 test_that("prepare_redactor: function", {
-    expect_identical(prepare_redactor(redact_http_auth), redact_http_auth)
+    expect_identical(prepare_redactor(redact_cookies), redact_cookies)
 })
 
-multiredact <- list(redact_http_auth, redact_cookies)
+multiredact <- list(redact_cookies, ~ redact_headers(., "X-Header"))
 test_that("prepare_redactor: list/multiple", {
     expect_redactor(prepare_redactor(multiredact))
-    expect_identical(prepare_redactor(multiredact[1]), redact_http_auth)
+    expect_identical(prepare_redactor(multiredact[1]), redact_cookies)
 })
 
 test_that("prepare_redactor: NULL for no redacting", {
@@ -37,10 +37,7 @@ with_mock_api({
         expect_message(
             capture_while_mocking(path=newmocks, {
                 ## Install the "testpkg" to a temp lib.loc _after_ we've already started recording
-                lib <- tempfile()
-                dir.create(lib)
-                Rcmd(c("INSTALL", "testpkg", paste0("--library=", shQuote(lib))),
-                    stdout=NULL, stderr=NULL)
+                lib <- install_testpkg("testpkg")
                 library(testpkg, lib.loc=lib)
                 expect_true("testpkg" %in% names(sessionInfo()$otherPkgs))
 
@@ -68,13 +65,16 @@ with_mock_api({
         newmocks2 <- tempfile()
         expect_warning(
             capture_while_mocking(simplify=FALSE, path=newmocks2, redact=NULL, {
-                a <- GET("api/", add_headers(`Authorization`="Bearer token"))
+                a <- POST("http://example.com/login",
+                    body=list(username="password"), encode="json")
             }),
             "The 'redact' argument to start_capturing() is deprecated. Use 'set_redactor()' instead.", fixed=TRUE
         )
-        expect_true(any(grepl("Bearer token", readLines(file.path(newmocks2, "api.R")))))
+        expect_true(any(grepl("token=12345",
+            readLines(file.path(newmocks2, "example.com", "login-712027-POST.R")))))
         with_mock_path(newmocks2, {
-            b <- GET("api/", add_headers(`Authorization`="Bearer token"))
+            b <- POST("http://example.com/login",
+                body=list(username="password"), encode="json")
         })
         expect_equal(content(b), content(a))
     })

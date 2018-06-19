@@ -8,7 +8,7 @@
 \usage{
 capture_requests(expr, path, ...)
 
-start_capturing(path, simplify = TRUE, verbose = FALSE, redact)
+start_capturing(path, simplify = TRUE, verbose, redact)
 
 stop_capturing()
 }
@@ -17,7 +17,8 @@ stop_capturing()
 
 \item{path}{Where to save the mock files. Default is the first directory in
 \code{\link[=.mockPaths]{.mockPaths()}}, which if not otherwise specified is the current working
-directory.}
+directory. It is generally better to call \code{.mockPaths()} directly if you
+want to write to a different path, rather than using the \code{path} argument.}
 
 \item{...}{Arguments passed through \code{capture_requests} to \code{start_capturing}}
 
@@ -29,7 +30,9 @@ a .R file using \code{\link[base:dput]{base::dput()}}.}
 \item{verbose}{logical: if \code{TRUE}, a \code{message} is printed for every file
 that is written when capturing requests containing the absolute path of the
 file. Useful for debugging if you're capturing but don't see the fixture
-files being written in the expected location. Default is \code{FALSE}.}
+files being written in the expected location. Default is \code{FALSE}. This
+parameter is deprecated; it is instead recommended that you set
+\code{options(httptest.verbose=TRUE)} to enable.}
 
 \item{redact}{function to run to purge sensitive strings from the recorded
 response objects. This argument is deprecated: use \code{\link[=set_redactor]{set_redactor()}} or a
@@ -50,14 +53,21 @@ those mocks, running your tests in \code{\link[=with_mock_api]{with_mock_api()}}
 \code{start_capturing} and \code{stop_capturing} allow you to turn on/off request
 recording for more convenient use in an interactive session.
 
-Mocks stored by this context are written out as plain-text files, either with
-extension \code{.json} if the request returned JSON content or with extension \code{.R}
-otherwise. The \code{.R} files contain syntax that when executed recreates the
-\code{httr} "response" object. By storing fixtures as plain-text files, you can
+Recorded responses are written out as plain-text files. By storing fixtures
+as plain-text files, you can
 more easily confirm that your mocks look correct, and you can more easily
 maintain them without having to re-record them. If the API changes subtly,
 such as when adding an additional attribute to an object, you can just touch
 up the mocks.
+
+If the response has status \code{200 OK} and the \code{Content-Type}
+maps to a supported file extension---currently \code{.json},
+\code{.html}, \code{.xml}, \code{.txt}, \code{.csv}, and \code{.tsv}---just the response body will be
+written out, using the appropriate extension. \code{204 No Content} status
+responses will be stored as an empty file with extension \code{.204}. Otherwise,
+the response will be written as a \code{.R} file containing syntax that, when
+executed, recreates the
+\code{httr} "response" object.
 }
 \examples{
 \dontrun{
@@ -75,4 +85,7 @@ GET("http://httpbin.org/response-headers",
     query=list(`Content-Type`="application/json"))
 stop_capturing()
 }
+}
+\seealso{
+\code{\link[=build_mock_url]{build_mock_url()}} for how requests are translated to file paths
 }
