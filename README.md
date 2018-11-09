@@ -1,7 +1,7 @@
 # httptest: A Test Environment for HTTP Requests in R
 
 [![Build Status](https://travis-ci.org/nealrichardson/httptest.png?branch=master)](https://travis-ci.org/nealrichardson/httptest) [![Build status](https://ci.appveyor.com/api/projects/status/egrw65593iso21cu?svg=true)](https://ci.appveyor.com/project/nealrichardson/httptest) [![codecov](https://codecov.io/gh/nealrichardson/httptest/branch/master/graph/badge.svg)](https://codecov.io/gh/nealrichardson/httptest)
-[![cran](https://www.r-pkg.org/badges/version-last-release/httptest)](https://cran.r-project.org/package=httptest)
+[![cran](https://www.r-pkg.org/badges/version-last-release/httptest)](https://cran.r-project.org/package=httptest) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2136/badge)](https://bestpractices.coreinfrastructure.org/projects/2136)
 
 `httptest` makes it easy to write tests for code and packages that wrap web APIs.
 Testing code that communicates with remote servers can otherwise be painful: things like authentication, server state, and network flakiness can make testing seem too costly to bother with. The `httptest` package enables you to test all of the logic on the R sides of the API in your package without requiring access to the remote service.
@@ -20,31 +20,29 @@ This package bridges the gap between two others: (1) [testthat](http://testthat.
 install.packages("httptest")
 ```
 
-The pre-release version of the package can be pulled from GitHub using the [devtools](https://github.com/hadley/devtools) package:
+The pre-release version of the package can be pulled from GitHub using the [remotes](https://github.com/r-lib/remotes) package (formerly part of and now a dependency of `devtools`):
 
 ```r
-# install.packages("devtools")
-devtools::install_github("nealrichardson/httptest")
+# install.packages("remotes")
+remotes::install_github("nealrichardson/httptest")
 ```
 
 ## Using
 
-Wherever you normally load `testthat`, load `httptest` instead. It "requires" `testthat`, so both will be loaded by using `httptest`. Specifically, you'll want to swap in `httptest` in:
+To start using `httptest` with your package, run `use_httptest()` in the root of your package directory. This will
 
-* the DESCRIPTION file, where `testthat` is typically referenced under "Suggests"
-* tests/testthat.R, which may otherwise begin with `library(testthat)`.
+* add `httptest` to "Suggests" in the DESCRIPTION file
+* add `library(httptest)` to `tests/testthat/helper.R`, which `testthat` loads before running tests
 
-Then, you're ready to start using the tools that `httptest` provides.
-
-Here's an overview of how to get started. For a longer discussion and examples, see `vignette("httptest")`, and see also the [package reference](https://enpiar.com/r/httptest/reference/) for a list of all of the test contexts and expectations provided in the package.
+Then, you're ready to start using the tools that `httptest` provides. Here's an overview of how to get started. For a longer discussion and examples, see `vignette("httptest")`, and see also the [package reference](https://enpiar.com/r/httptest/reference/) for a list of all of the test contexts and expectations provided in the package.
 
 ### In your test suite
 
 The package includes several contexts, which you wrap around test code that would otherwise make network requests through `httr`. They intercept the requests and prevent actual network traffic from occurring.  
 
-**`with_mock_api()`** is the most powerful context. It maps request URLs, along with request bodies and query parameters, to file paths in your test directory. If the file exists, its contents are returned as the response object, as if the API server had returned it. This allows you to test complex R code that makes requests and does something with the response, simulating how the API should respond to specific requests.
+**`with_mock_api()`** maps requests---URLs along with request bodies and query parameters---to file paths. If the file exists, its contents are returned as the response object, as if the API server had returned it. This allows you to test complex R code that makes requests and does something with the response, simulating how the API should respond to specific requests.
 
-Requests that do not have a corresponding fixture file raise errors that print the request method, URL, and body payload, if provided. **`expect_GET()`**, **`expect_POST()`**, and the rest of the family of HTTP-request-method expectations look for those errors and check that the requests match the expectations. These are useful for asserting that a function call would make a correctly-formed HTTP request without the need to generate a mock, as well as for asserting that a function does not make a request (because if it did, it would raise an error in this context).
+Requests that do not have a corresponding fixture file raise errors that print the request method, URL, and body payload, if provided. **`expect_GET()`**, **`expect_POST()`**, and the rest of the HTTP-request-method expectations look for those errors and check that the requests match the expectations. These are useful for asserting that a function call would make a correctly-formed HTTP request without the need to generate a mock, as well as for asserting that a function does not make a request (because if it did, it would raise an error in this context).
 
 Adding `with_mock_api()` to your tests is straightforward. Given a very basic test that makes network requests:
 
@@ -102,7 +100,7 @@ stop_capturing()
 
 Mocks stored by `capture_requests` are written out as plain-text files. By storing fixtures as human-readable files, you can more easily confirm that your mocks look correct, and you can more easily maintain them if the API changes subtly without having to re-record them (though it is easy enough to delete and recapture). Text files also play well with version control systems, such as git.
 
-When recording requests, `httptest` looks for and redacts the standard ways that auth credentials are returned in responses, so you won't accidentally publish your personal tokens. The redacting behavior is fully customizable: you can programmatically sanitize or truncate other parts of the request and response, including the URL and response body. See `vignette("redacting")` for details.
+When recording requests, `httptest` redacts the standard ways that auth credentials are passed, so you won't accidentally publish your personal tokens. The redacting behavior is fully customizable: you can programmatically sanitize or alter other parts of the request and response. See `vignette("redacting")` for details.
 
 ### In your vignettes
 
@@ -123,7 +121,7 @@ To change where files are being written or read from, use `.mockPaths()` (like `
 #### How do I fix "non-portable file paths"?
 
 If you see this error in `R CMD build` or `R CMD check`, it means that there are file paths are longer than 100 characters, which can sometimes happen when you record requests. `httptest` preserves the URL structure of mocks in file paths to improve the readability and maintainability of your tests, as well as to make visible the properties of your API.
-Indeed, the file-system tree view of the mock files gives a visual representation of your API. This value comes with a tradeoff: sometimes URLs can be long, and R doesn't like that. 
+Indeed, the file-system tree view of the mock files gives a visual representation of your API. This value comes with a tradeoff: sometimes URLs can be long, and R doesn't like that.
 
 Depending on how long your URLs are, there are a few ways to save on characters without compromising readability of your code and tests.
 

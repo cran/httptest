@@ -215,18 +215,14 @@ hr {
 
 <p>To illustrate the power of <code>with_mock_api</code>, let&#39;s try to add tests to an R package that wraps a prominent web API. The <code>twitteR</code> package is quite popular (<a href="https://cranlogs.r-pkg.org/badges/twitteR">13k downloads per month</a>, at the time of writing), but like most R packages, it doesn&#39;t have a test suite. Indeed, it is hard to test the querying of an API that requires OAuth authentication, and thus a user account to use in testing. That&#39;s tricky to set up to run locally, and even more challenging to run on a continuous-integration service like Travis-CI. But <code>httptest</code> can help.</p>
 
-<p>First, we need to set up some boilerplate for <code>testthat</code> testing, which <code>httptest</code> uses. Add a &ldquo;tests&rdquo; directory, and in that, a &ldquo;testthat.R&rdquo; with</p>
+<p>First, we need to add <code>httptest</code> to our package test suite. Once you&#39;ve configured your package to use <code>testthat</code> (<code>usethis::use_testthat()</code> is one way), run <code>httptest::use_httptest()</code>. This adds <code>httptest</code> to your package <code>DESCRIPTION</code> and makes sure it is loaded in your test setup code.</p>
 
-<pre><code class="r">library(httptest)
-test_check(&quot;twitteR&quot;)
-</code></pre>
-
-<p>Note that it says <code>library(httptest)</code> instead of the <code>library(testthat)</code> that you would otherwise use with <code>testthat</code>. Next, let&#39;s add a &ldquo;testthat&rdquo; directory to hold our test files. In that directory, we&#39;ll start with a &ldquo;helper.R&rdquo; file for common setup code. From some experimenting, it&#39;s clear that the package checks to see if you have an OAuth token set. We&#39;re not actually going to hit the real Twitter API, so we don&#39;t need a valid token—we just need a token to exist so the R code that looks for a token finds one:</p>
+<p>Now we can start with our tests. From some experimenting, it&#39;s clear that the package checks to see if you have an OAuth token set. We&#39;re not actually going to hit the real Twitter API, so we don&#39;t need a valid token—we just need a token to exist so the R code that looks for a token finds one:</p>
 
 <pre><code class="r">use_oauth_token(&quot;foo&quot;)
 </code></pre>
 
-<p>Now let&#39;s write a test. Add &ldquo;test-user.R&rdquo; and put a test for getting a user record, via the <code>getUser</code> function. According to the source code, this function should hit the &ldquo;show user&rdquo; Twitter API, documented <a href="https://dev.twitter.com/rest/reference/get/users/show">here</a>. But, we&#39;re going to prevent that request from actually happening by wrapping our test in the <code>with_mock_api</code>.</p>
+<p>Let&#39;s write a test. Add &ldquo;test-user.R&rdquo; to your test directory and put a test for getting a user record, via the <code>getUser</code> function. According to the source code, this function should hit the &ldquo;show user&rdquo; Twitter API, documented <a href="https://dev.twitter.com/rest/reference/get/users/show">here</a>. But, we&#39;re going to prevent that request from actually happening by wrapping our test in the <code>with_mock_api</code>.</p>
 
 <pre><code class="r">context(&quot;Get a user&quot;)
 

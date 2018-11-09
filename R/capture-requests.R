@@ -102,8 +102,15 @@ start_capturing <- function (path, simplify=TRUE, verbose, redact) {
     req_tracer <- substitute({
         ## Get the value returned from the function, and sanitize it
         redactor <- get_current_redactor()
-        .resp <- redactor(returnValue())
-        save_response(.resp, simplify=simplify)
+        .resp <- returnValue()
+        if (is.null(.resp)) {
+            # returnValue() defaults to NULL if the traced function exits with
+            # an error, so there's no response to record.
+            warning("Request errored; no captured response file saved",
+                call.=FALSE)
+        } else {
+            save_response(redactor(.resp), simplify=simplify)
+        }
     }, list(simplify=simplify))
     for (verb in c("PUT", "POST", "PATCH", "DELETE", "VERB", "GET", "RETRY")) {
         trace_httr(verb, exit=req_tracer)
@@ -128,7 +135,7 @@ save_response <- function (response, simplify=TRUE) {
     mock_file <- buildMockURL(response$request)
     ## Track separately the actual full path we're going to write to
     dst_file <- file.path(.mockPaths()[1], mock_file)
-    dir.create(dirname(dst_file), showWarnings=FALSE, recursive=TRUE)
+    mkdir_p(dst_file)
 
     ## Get the Content-Type
     ct <- get_content_type(response)
@@ -198,5 +205,14 @@ save_response <- function (response, simplify=TRUE) {
 stop_capturing <- function () {
     for (verb in c("GET", "PUT", "POST", "PATCH", "DELETE", "VERB", "RETRY")) {
         safe_untrace(verb, add_headers)
+        safe_untrace(verb)
     }
+}
+
+mkdir_p <- function (filename) {
+    # Recursively create the directories so that we can write this file.
+    # If they already exist, do nothing.
+    # Like mkdir -p path
+
+    dir.create(dirname(filename), showWarnings=FALSE, recursive=TRUE)
 }
