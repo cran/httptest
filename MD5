@@ -1,10 +1,10 @@
-6c59f29c32a6893bb0d6ab5b618d302a *DESCRIPTION
+16898f39af2b66d82f61b51c32088ebe *DESCRIPTION
 d322d0a070dde35011da6f246613723c *LICENSE
 a949bdbc6519305b9962900147613d55 *NAMESPACE
-bf186bf30f2241e7c15d97215cefa21d *NEWS.md
+c303a69d205e08a6faafca933c96bb71 *NEWS.md
 9a298930e9639775378f4bf4c135e8dd *R/capture-requests.R
 51b517367f6806d3ed0715bd91583b58 *R/content-type.R
-1d7fd7c35a146b28decae9c64b1dbb99 *R/expect-header.R
+bdd0b815b9d6b2603f1d6626816fb5c1 *R/expect-header.R
 fbef454c7f3b1bda5278748a67a6cb15 *R/expect-json.R
 8f6d2a9ca2f6e3febd5a3c9c07e789e8 *R/expect-request.R
 be40f0ccc46e2902e23fd233410bfff0 *R/fake-http.R
@@ -16,7 +16,7 @@ c386f755dcce4fe29d14fe145d779cda *R/mock-paths.R
 0779ad6dc66524dfff8b15a801128f64 *R/offline.R
 d451495a2f4aed21ee138dac0ae61e28 *R/public.R
 3dc6cbdbf5a23ffccca54d00d4838d57 *R/redact.R
-4e79595b82168613290c8b1a874c0098 *R/trace.R
+ed2b83f2567c6c456dbbabb733c42ff8 *R/trace.R
 ef7a08658e56de4242be9acade83df6b *R/use-httptest.R
 4e71c4a0881a56c96173b24e8bf4138e *R/vignette.R
 8796bbb2028d2bb3e3606bcbad4d1daa *R/without-internet.R
