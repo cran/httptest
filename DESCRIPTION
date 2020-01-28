@@ -13,21 +13,21 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables one to write vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 3.2.2
+Version: 3.3.0
 Authors@R: person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com")
 URL: https://enpiar.com/r/httptest,
         https://github.com/nealrichardson/httptest
 BugReports: https://github.com/nealrichardson/httptest/issues
 License: MIT + file LICENSE
-Depends: R (>= 3.0.0), testthat
-Imports: digest, httr, jsonlite, stats, utils
-Suggests: covr, knitr, rmarkdown, spelling, xml2
+Depends: R (>= 3.3.0), testthat
+Imports: curl, digest, httr, jsonlite, stats, utils
+Suggests: covr, knitr, pkgload, rmarkdown, spelling, xml2
 Language: en-US
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-12-07 04:14:18 UTC; npr
+Packaged: 2020-01-28 20:48:21 UTC; enpiar
 Author: Neal Richardson [aut, cre]
 Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
 Repository: CRAN
-Date/Publication: 2018-12-07 05:30:11 UTC
+Date/Publication: 2020-01-28 21:40:02 UTC

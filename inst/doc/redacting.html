@@ -261,7 +261,7 @@ mock$all_headers[[1]][[&quot;set-cookie&quot;]]
 <pre><code class="r">set_redactor(~ gsub_response(., getOption(&quot;pivotal.project&quot;), &quot;123&quot;))
 </code></pre>
 
-<p>Note the formula shorthand: this follows the syntax in the <a href="purrr.tidyverse.org"><code>purrr</code></a> package for defining anonymous functions. It is equivalent to <code>function (response) gsub_response(response, getOption(&quot;pivotal.project&quot;), &quot;123&quot;)</code>.</p>
+<p>Note the formula shorthand: this follows the syntax in the <a href="https://purrr.tidyverse.org"><code>purrr</code></a> package for defining anonymous functions. It is equivalent to <code>function (response) gsub_response(response, getOption(&quot;pivotal.project&quot;), &quot;123&quot;)</code>.</p>
 
 <p>Valid inputs to <code>set_redactor()</code> include:</p>
 
