@@ -32,8 +32,8 @@ directory, i.e. relative to the .R test files themselves. This is the default
 location for storing and retrieving mocks, but you can put them anywhere you
 want as long as you set the appropriate location with \code{\link[=.mockPaths]{.mockPaths()}}.
 
-In the interest of standardizing naming conventions, \code{with_mock_api()} is the
-preferred name for this context; \code{with_mock_API()} is being deprecated.
+\code{with_mock_API()} is a deprecated alias for \code{with_mock_api()} and will be
+removed in the next release.
 }
 \seealso{
 \code{\link[=use_mock_api]{use_mock_api()}} to enable mocking on its own (not in a context); \code{\link[=build_mock_url]{build_mock_url()}}; \code{\link[=.mockPaths]{.mockPaths()}}

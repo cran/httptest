@@ -2,12 +2,9 @@
 % Please edit documentation in R/fake-http.R
 \name{with_fake_http}
 \alias{with_fake_http}
-\alias{with_fake_HTTP}
 \title{Make all HTTP requests return a fake response}
 \usage{
 with_fake_http(expr)
-
-with_fake_HTTP(expr)
 }
 \arguments{
 \item{expr}{Code to run inside the fake context}
@@ -31,16 +28,15 @@ the HTTP functions do not error and halt execution, instead returning a
 proceed with its response handling logic and itself be tested. The response
 it returns echoes back most of the request itself, similar to how some
 endpoints on \url{http://httpbin.org} do.
-
-In the interest of standardizing naming conventions, \code{with_fake_http()} is
-the preferred name for this context; \code{with_fake_HTTP()} is deprecated.
 }
 \examples{
 with_fake_http({
-    expect_GET(req1 <- httr::GET("http://example.com"), "http://example.com")
-    req1$url
-    expect_POST(req2 <- httr::POST("http://example.com", body='{"a":1}'),
-        "http://example.com")
-    httr::content(req2)
+  expect_GET(req1 <- httr::GET("http://example.com"), "http://example.com")
+  req1$url
+  expect_POST(
+    req2 <- httr::POST("http://example.com", body = '{"a":1}'),
+    "http://example.com"
+  )
+  httr::content(req2)
 })
 }

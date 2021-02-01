@@ -205,7 +205,7 @@ hr {
 
 <p><code>httptest</code> solves these problems. By adding as little as one line of code to your vignette, you can safely record API responses from a live session. These API responses are scrubbed of sensitive personal information and stored in a subfolder in your <code>vignettes</code> directory. Subsequent vignette builds, including on continuous-integration services, CRAN, and your package users&#39; computers, use these recorded responses, allowing the document to regenerate without a network connection or API credentials. To record fresh API responses, delete the subfolder of cached responses and re-run.</p>
 
-<p>This vignette shows you how. To see an example in the wild, see the <a href="http://enpiar.com/r/pivotaltrackR/articles/pivotaltrackR.html">introduction vignette to <code>pivotaltrackR</code></a> (<a href="https://github.com/nealrichardson/pivotaltrackR/blob/master/vignettes/pivotaltrackR.Rmd">source</a>). While this discussion is focused on package vignettes, the same behavior should work in any R Markdown document.</p>
+<p>This vignette shows you how. To see an example in the wild, see the <a href="https://enpiar.com/r/pivotaltrackR/articles/pivotaltrackR.html">introduction vignette to <code>pivotaltrackR</code></a> (<a href="https://github.com/nealrichardson/pivotaltrackR/blob/master/vignettes/pivotaltrackR.Rmd">source</a>). While this discussion is focused on package vignettes, the same behavior should work in any R Markdown document.</p>
 
 <h1>The basics: <code>start_vignette()</code></h1>
 
@@ -267,16 +267,16 @@ change_state()
 library(magrittr)
 
 api_root &lt;- &quot;https://www.pivotaltracker.com/services/v5/&quot;
-set_redactor(function (response) {
-    response %&gt;%
-        redact_headers(&quot;X-TrackerToken&quot;) %&gt;%
-        gsub_response(api_root, &quot;&quot;, fixed=TRUE) %&gt;%
-        gsub_response(getOption(&quot;pivotal.project&quot;), &quot;123&quot;)
+set_redactor(function(response) {
+  response %&gt;%
+    redact_headers(&quot;X-TrackerToken&quot;) %&gt;%
+    gsub_response(api_root, &quot;&quot;, fixed = TRUE) %&gt;%
+    gsub_response(getOption(&quot;pivotal.project&quot;), &quot;123&quot;)
 })
-set_requester(function (request) {
-    request %&gt;%
-        gsub_request(api_root, &quot;&quot;, fixed=TRUE) %&gt;%
-        gsub_request(getOption(&quot;pivotal.project&quot;), &quot;123&quot;)
+set_requester(function(request) {
+  request %&gt;%
+    gsub_request(api_root, &quot;&quot;, fixed = TRUE) %&gt;%
+    gsub_request(getOption(&quot;pivotal.project&quot;), &quot;123&quot;)
 })
 start_vignette(&quot;stories&quot;)
 </code></pre>

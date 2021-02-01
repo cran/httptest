@@ -13,9 +13,13 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables one to write vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 3.3.0
-Authors@R: person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com")
-URL: https://enpiar.com/r/httptest,
+Version: 4.0.0
+Authors@R: c(
+        person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com"),
+        person("Jonathan", "Keane", role="ctb", email="jkeane@gmail.com"),
+        person("Maëlle", "Salmon", role="ctb", email="maelle.salmon@yahoo.se", comment=c(ORCID="0000-0002-2815-0399"))
+    )
+URL: https://enpiar.com/r/httptest/,
         https://github.com/nealrichardson/httptest
 BugReports: https://github.com/nealrichardson/httptest/issues
 License: MIT + file LICENSE
@@ -23,11 +27,15 @@ Depends: R (>= 3.3.0), testthat
 Imports: curl, digest, httr, jsonlite, stats, utils
 Suggests: covr, knitr, pkgload, rmarkdown, spelling, xml2
 Language: en-US
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
+Encoding: UTF-8
 VignetteBuilder: knitr
+Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2020-01-28 20:48:21 UTC; enpiar
-Author: Neal Richardson [aut, cre]
+Packaged: 2021-01-31 22:42:42 UTC; enpiar
+Author: Neal Richardson [aut, cre],
+  Jonathan Keane [ctb],
+  Maëlle Salmon [ctb] (<https://orcid.org/0000-0002-2815-0399>)
 Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-01-28 21:40:02 UTC
+Date/Publication: 2021-02-01 06:10:04 UTC

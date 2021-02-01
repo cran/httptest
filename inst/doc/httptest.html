@@ -203,9 +203,9 @@ hr {
 <body>
 <p>Testing code and packages that communicate with remote servers can be painful. Dealing with authentication, bootstrapping server state, cleaning up objects that may get created during the test run, network flakiness, and other complications can make testing seem too costly to bother with. But it doesn&#39;t need to be that hard. The <code>httptest</code> package lets you test R code that constructs API requests and handles their responses, all without requiring access to the remote service during the test run. This makes tests easy to write and fast to run.</p>
 
-<p><code>httptest</code> sits on top of the <a href="http://testthat.r-lib.org/">testthat</a> package and provides test <strong>contexts</strong> that mock the network connection. These let you supply mock API responses for some requests and allow you to assert that HTTP requests were—or were not—made using custom <strong>expectation</strong> functions. The package further includes tools for recording the responses of real requests and storing them as fixtures that you can later load in a test run. Taken together, <code>httptest</code> lets you test that your code is making the intended requests and that it handles the expected responses correctly without depending on a connection to a remote API.</p>
+<p><code>httptest</code> sits on top of the <a href="https://testthat.r-lib.org/">testthat</a> package and provides test <strong>contexts</strong> that mock the network connection. These let you supply mock API responses for some requests and allow you to assert that HTTP requests were—or were not—made using custom <strong>expectation</strong> functions. The package further includes tools for recording the responses of real requests and storing them as fixtures that you can later load in a test run. Taken together, <code>httptest</code> lets you test that your code is making the intended requests and that it handles the expected responses correctly without depending on a connection to a remote API.</p>
 
-<p>This vignette covers some of the core features of the <code>httptest</code> package, focusing on how to mock HTTP responses, how to make other assertions about requests, and how to record real requests for future use as mocks. Note that <code>httptest</code> requires the <code>testthat</code> package, and it follows the testing conventions and interfaces defined there, extending them with some additional wrappers and expectations. If you&#39;re not familiar with <code>testthat</code>, see the <a href="http://r-pkgs.had.co.nz/tests.html">&ldquo;Testing&rdquo; chapter</a> chapter of Hadley Wickham&#39;s <em>R Packages</em> book. Furthermore, <code>httptest</code> is designed for use with packages that rely on the <a href="http://httr.r-lib.org/">httr</a> requests library—it is a bridge between <code>httr</code> and <code>testthat</code>.</p>
+<p>This vignette covers some of the core features of the <code>httptest</code> package, focusing on how to mock HTTP responses, how to make other assertions about requests, and how to record real requests for future use as mocks. Note that <code>httptest</code> requires the <code>testthat</code> package, and it follows the testing conventions and interfaces defined there, extending them with some additional wrappers and expectations. If you&#39;re not familiar with <code>testthat</code>, see the <a href="https://r-pkgs.org/tests.html">&ldquo;Testing&rdquo; chapter</a> chapter of Hadley Wickham&#39;s <em>R Packages</em> book. Furthermore, <code>httptest</code> is designed for use with packages that rely on the <a href="https://httr.r-lib.org/">httr</a> requests library—it is a bridge between <code>httr</code> and <code>testthat</code>.</p>
 
 <h1>The <code>with_mock_api</code> context</h1>
 
@@ -227,9 +227,9 @@ hr {
 <pre><code class="r">context(&quot;Get a user&quot;)
 
 with_mock_api({
-    test_that(&quot;We can get a user object&quot;, {
-        user &lt;- getUser(&quot;twitterdev&quot;)
-    })
+  test_that(&quot;We can get a user object&quot;, {
+    user &lt;- getUser(&quot;twitterdev&quot;)
+  })
 })
 </code></pre>
 
@@ -276,19 +276,19 @@ simplified, more readable alternative.</p>
 <p>Let&#39;s copy that example response to the fixture file path that the message indicated, <code>api.twitter.com/1.1/users/show.json-84627b.json</code>. When we run the tests again, there&#39;s no more error. Great! This means that <code>with_mock_api</code> loaded our mock when it reached the GET request, and the rest of the code continued executing. <code>getUser</code> returns a &ldquo;user&rdquo; object, so let&#39;s now assert some things about it and test some of its methods:</p>
 
 <pre><code class="r">test_that(&quot;We can get a user object&quot;, {
-    user &lt;- getUser(&quot;twitterdev&quot;)
-    expect_is(user, &quot;user&quot;)
-    expect_identical(user$name, &quot;TwitterDev&quot;)
-    expect_output(print(user), &quot;TwitterDev&quot;)
+  user &lt;- getUser(&quot;twitterdev&quot;)
+  expect_is(user, &quot;user&quot;)
+  expect_identical(user$name, &quot;TwitterDev&quot;)
+  expect_output(print(user), &quot;TwitterDev&quot;)
 })
 </code></pre>
 
 <p>We can do the same for the <code>lookupUsers</code> function. It should hit the <code>users/lookup.json</code> endpoint and the function should return a list of <code>user</code> objects:</p>
 
 <pre><code class="r">test_that(&quot;lookupUsers retrieves many&quot;, {
-    result &lt;- lookupUsers(c(&quot;twitterapi&quot;, &quot;twitter&quot;))
-    expect_is(result, &quot;list&quot;)
-    expect_true(all(vapply(result, inherits, logical(1), what=&quot;user&quot;)))
+  result &lt;- lookupUsers(c(&quot;twitterapi&quot;, &quot;twitter&quot;))
+  expect_is(result, &quot;list&quot;)
+  expect_true(all(vapply(result, inherits, logical(1), what = &quot;user&quot;)))
 })
 </code></pre>
 
@@ -303,7 +303,7 @@ simplified, more readable alternative.</p>
 │   │       └── users
 │   │           ├── lookup.json-342984.json
 │   │           └── show.json-84627b.json
-│   ├── helper.R
+│   ├── setup.R
 │   └── test-user.R
 └── testthat.R
 </code></pre>
@@ -312,22 +312,22 @@ simplified, more readable alternative.</p>
 
 <pre><code class="r">context(&quot;Get a user&quot;)
 
-use_oauth_token(&quot;foo&quot;) # Pulled here from helper.R for clarity
+use_oauth_token(&quot;foo&quot;) # Pulled here from setup.R for clarity
 
 with_mock_api({
-    test_that(&quot;We can get a user object&quot;, {
-        user &lt;- getUser(&quot;twitterdev&quot;)
-        expect_is(user, &quot;user&quot;)
-        expect_identical(user$name, &quot;TwitterDev&quot;)
-        expect_identical(name(user), &quot;TwitterDev&quot;)
-        expect_output(print(user), &quot;TwitterDev&quot;)
-    })
+  test_that(&quot;We can get a user object&quot;, {
+    user &lt;- getUser(&quot;twitterdev&quot;)
+    expect_is(user, &quot;user&quot;)
+    expect_identical(user$name, &quot;TwitterDev&quot;)
+    expect_identical(name(user), &quot;TwitterDev&quot;)
+    expect_output(print(user), &quot;TwitterDev&quot;)
+  })
 
-    test_that(&quot;lookupUsers retrieves many&quot;, {
-        result &lt;- lookupUsers(c(&quot;twitterapi&quot;, &quot;twitter&quot;))
-        expect_is(result, &quot;list&quot;)
-        expect_true(all(vapply(result, inherits, logical(1), what=&quot;user&quot;)))
-    })
+  test_that(&quot;lookupUsers retrieves many&quot;, {
+    result &lt;- lookupUsers(c(&quot;twitterapi&quot;, &quot;twitter&quot;))
+    expect_is(result, &quot;list&quot;)
+    expect_true(all(vapply(result, inherits, logical(1), what = &quot;user&quot;)))
+  })
 })
 </code></pre>
 
@@ -354,13 +354,29 @@ stop_capturing()
 
 <p>While recording responses to use later in tests can be very convenient, we don&#39;t always want to use captured responses, or at least not blindly. Real responses may contain information you want to sanitize or redact, like usernames, emails, or tokens. And real responses may be too big or messy to want to deal with. You may want to pare back a large set of results that a query returns down to four or five results and still have enough variation to test with.</p>
 
+<h2>Automatically recording/playing back: the <code>with_mock_dir()</code> context</h2>
+
+<p>The <code>with_mock_dir()</code> context can help you create mock files when they don&#39;t exist yet, and to easily re-record them.
+For example:</p>
+
+<pre><code class="r">with_mock_dir(&quot;httpbin-get&quot;, {
+  a &lt;- GET(&quot;https://httpbin.org/get&quot;)
+  print(a)
+})
+</code></pre>
+
+<p>The first time you run the code, it will create the folder <code>tests/testthat/httpbin-get</code>,
+ and create mock files under it.
+The next times you run it, it will <em>use</em> the mock files in <code>tests/testthat/httpbin-get</code>.
+To re-record, simply delete the folder.</p>
+
 <h1>Mocks are text files</h1>
 
 <p><code>httptest</code> stores these API mocks as plain-text files, which has several nice features, particularly relative to storing serialized (binary) R objects. You can more easily confirm that your mocks look correct, and you can more easily maintain them without having to re-record them. When you do edit them, text files are more easily handled by version-control systems like Git and Mercurial. Plain-text files can also have comments, so you can make notes as to why a certain fixture exists, what a particular value means, and so on, which will help the users of your package—and your future self!</p>
 
 <p>By having mocks in human-readable text files, you can also more easily extend your code. APIs are living things that evolve over time, and your code that communicates with an API needs to be able to change with them. If the API adds an additional attribute to an object, no big deal: just touch up the mocks. In addition, you can future-proof your code against that kind of API change by tweaking a fixture file. In <a href="https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34">this example</a> from the <code>crunch</code> package, an extra, nonsense attribute was added to the JSON just to ensure that the code doesn&#39;t break if there are new, unknown features added to the API response. That way, if the API grows new features, people who are using your package don&#39;t get errors if they haven&#39;t upgraded to the latest release that recognizes the new feature.</p>
 
-<p>If you&#39;re responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the <a href="http://crunch.io/r/crunch/">crunch</a> package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:</p>
+<p>If you&#39;re responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the <a href="https://crunch.io/r/crunch/">crunch</a> package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:</p>
 
 <pre><code>app.crunch.io/
 ├── api
@@ -411,30 +427,30 @@ elements: the request
 method (e.g. &ldquo;GET&rdquo;), the request URL, and the request body, if present. The verb-expectation functions,
 such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shape.</p>
 
-<p>Here&#39;s a example of how <code>without_internet</code> can be used to assert that code that should not make network requests in fact does not. This is a simplified version of a test from the <a href="http://enpiar.com/r/httpcache">httpcache</a> package, a library that implements a query cache for HTTP requests in R. The point of the query cache is that only the first time you make a certain GET request should it hit the remote API; subsequent requests should read from the cache and not make a request. The test first makes a request (artificially, using <code>with_fake_http</code>, the third test context the package provides) to prime the cache.</p>
+<p>Here&#39;s a example of how <code>without_internet</code> can be used to assert that code that should not make network requests in fact does not. This is a simplified version of a test from the <a href="https://enpiar.com/r/httpcache/">httpcache</a> package, a library that implements a query cache for HTTP requests in R. The point of the query cache is that only the first time you make a certain GET request should it hit the remote API; subsequent requests should read from the cache and not make a request. The test first makes a request (artificially, using <code>with_fake_http</code>, the third test context the package provides) to prime the cache.</p>
 
 <pre><code class="r">with_fake_http({
-    test_that(&quot;Cache gets set on GET&quot;, {
-        expect_length(cacheKeys(), 0)
-        expect_GET(a &lt;- GET(&quot;https://app.crunch.io/api/&quot;),
-            &quot;https://app.crunch.io/api/&quot;)
-        expect_length(cacheKeys(), 1)
-        expect_identical(a, getCache(&quot;https://app.crunch.io/api/&quot;))
-    })
+  test_that(&quot;Cache gets set on GET&quot;, {
+    expect_length(cacheKeys(), 0)
+    expect_GET(a &lt;- GET(&quot;https://app.crunch.io/api/&quot;),
+      &quot;https://app.crunch.io/api/&quot;)
+    expect_length(cacheKeys(), 1)
+    expect_identical(a, getCache(&quot;https://app.crunch.io/api/&quot;))
+  })
 })
 </code></pre>
 
 <p>Then, using <code>without_internet</code>, the test checks two things: first, that doing the same GET succeeds because it reads from cache; and second, that if you bypass the query cache, you get an error because you tried to make a network request.</p>
 
 <pre><code class="r">without_internet({
-    test_that(&quot;When the cache is set, can read from it even with no connection&quot;, {
-        expect_identical(GET(&quot;https://app.crunch.io/api/&quot;)$url,
-            &quot;https://app.crunch.io/api/&quot;)
-    })
-    test_that(&quot;But uncached() prevents reading from the cache&quot;, {
-        expect_error(uncached(GET(&quot;https://app.crunch.io/api/&quot;)),
-            &quot;GET https://app.crunch.io/api/&quot;)
-    })
+  test_that(&quot;When the cache is set, can read from it even with no connection&quot;, {
+    expect_identical(GET(&quot;https://app.crunch.io/api/&quot;)$url,
+      &quot;https://app.crunch.io/api/&quot;)
+  })
+  test_that(&quot;But uncached() prevents reading from the cache&quot;, {
+    expect_error(uncached(GET(&quot;https://app.crunch.io/api/&quot;)),
+      &quot;GET https://app.crunch.io/api/&quot;)
+  })
 })
 </code></pre>
 
@@ -447,16 +463,16 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 <p>Both <code>without_internet</code> and <code>with_mock_api</code> allow you to make assertions about requests—method, URL, and payload—that should be made. The various <code>expect_VERB</code> expectation functions facilitate this testing. In this example from the <code>crunch</code> package, inside the <code>with_mock_api</code> context, there is a catalog resource containing three entities, each of which has an &ldquo;archived&rdquo; attribute. The <code>is.archived</code> method returns the value of that attribute:</p>
 
 <pre><code class="r">test_that(&quot;is.archived&quot;, {
-    expect_identical(is.archived(catalog), c(FALSE, TRUE, FALSE))
+  expect_identical(is.archived(catalog), c(FALSE, TRUE, FALSE))
 })
 </code></pre>
 
 <p>When we update the attributes of the catalog&#39;s entities, we send a PATCH request, and we only want to send values that are changing. That way, we don&#39;t unintentionally collide with any other concurrent actions happening on the server, and we can send smaller messages, which should be faster. In this example, if we were to set &ldquo;archived&rdquo; to <code>TRUE</code> for the second and third elements of the catalog, we&#39;d only want to send a PATCH request that referenced the third element because the second one is already <code>TRUE</code>.</p>
 
 <pre><code class="r">test_that(&quot;&#39;archive&#39; sets the archived attribute and only PATCHes changes&quot;, {
-    expect_PATCH(archive(catalog[2:3]),
-        &#39;https://app.crunch.io/api/datasets/&#39;,
-        &#39;{&quot;https://app.crunch.io/api/datasets/3/&quot;:{&quot;archived&quot;:true}}&#39;)
+  expect_PATCH(archive(catalog[2:3]),
+    &#39;https://app.crunch.io/api/datasets/&#39;,
+    &#39;{&quot;https://app.crunch.io/api/datasets/3/&quot;:{&quot;archived&quot;:true}}&#39;)
 })
 </code></pre>
 
@@ -467,23 +483,24 @@ such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shap
 <p>An example of this from the <code>crunch</code> package is in testing a <code>join</code> function, which has a similar syntax to the base R <code>merge</code> function. <code>merge</code> takes &ldquo;by.x&rdquo; and &ldquo;by.y&rdquo; arguments, which point to the variables in the &ldquo;x&rdquo; and &ldquo;y&rdquo; data.frames on which to match the rows when merging. It has a shortcut for the case where the variable have the same names in both data.frame, in which case you can just specify a &ldquo;by&rdquo; argument. To test that all of those combinations of specifying join keys result in the same request, the test defines a payload string to reuse</p>
 
 <pre><code class="r">testPayload &lt;- paste0(
-    &#39;{&quot;https://app.crunch.io/api/datasets/1/joins/95c0b45fe0af492594863f818cb913d2/&quot;:&#39;,
-    &#39;{&quot;left_key&quot;:&quot;https://app.crunch.io/api/datasets/1/variables/birthyr/&quot;,&#39;,
-    &#39;&quot;right_key&quot;:&quot;https://app.crunch.io/api/datasets/3/variables/birthyr/&quot;}}&#39;)
+  &#39;{&quot;https://app.crunch.io/api/datasets/1/joins/95c0b45fe0af492594863f818cb913d2/&quot;:&#39;,
+  &#39;{&quot;left_key&quot;:&quot;https://app.crunch.io/api/datasets/1/variables/birthyr/&quot;,&#39;,
+  &#39;&quot;right_key&quot;:&quot;https://app.crunch.io/api/datasets/3/variables/birthyr/&quot;}}&#39;
+)
 </code></pre>
 
 <p>and then asserts that three different ways of calling <code>join</code> result in the same <code>PATCH</code> request being made</p>
 
 <pre><code class="r">test_that(&quot;Can specify &#39;by&#39; variables several ways&quot;, {
-    expect_PATCH(join(ds1, ds2, by.x=ds1$birthyr, ds2$birthyr),
-        &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
-        testPayload)
-    expect_PATCH(join(ds1, ds2, by.x=&quot;birthyr&quot;, by.y=&quot;birthyr&quot;),
-        &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
-        testPayload)
-    expect_PATCH(join(ds1, ds2, by=&quot;birthyr&quot;),
-        &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
-        testPayload)
+  expect_PATCH(join(ds1, ds2, by.x = ds1$birthyr, ds2$birthyr),
+    &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
+    testPayload)
+  expect_PATCH(join(ds1, ds2, by.x = &quot;birthyr&quot;, by.y = &quot;birthyr&quot;),
+    &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
+    testPayload)
+  expect_PATCH(join(ds1, ds2, by = &quot;birthyr&quot;),
+    &#39;https://app.crunch.io/api/datasets/1/joins/&#39;,
+    testPayload)
 })
 </code></pre>
 
