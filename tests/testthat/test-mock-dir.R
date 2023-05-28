@@ -20,6 +20,7 @@ public({
 
   test_that("with_mock_dir creates mock files directory", {
     skip_if_disconnected()
+    skip_on_ci()
     temporary_dir <- tempfile()
     current_mock_paths <- .mockPaths()
     with_mock_dir(temporary_dir, {
@@ -44,6 +45,26 @@ public({
     })
     with_mock_dir("/asdf", {
       expect_identical(.mockPaths(), "/asdf")
+    })
+  })
+
+  test_that("with_mock_dir uses the set requester", {
+    set_requester(function (request) {
+      gsub_request(
+        request,
+        "http://httpbin.org/status/",
+        "api/",
+        fixed = TRUE
+      )
+    })
+    d <- tempfile()
+    dir.create(file.path(d, "tests", "testthat"), recursive = TRUE)
+    old <- setwd(d)
+    on.exit(setwd(old))
+
+    with_mock_dir("asdf", {
+      resp <- GET("http://httpbin.org/status/204")
+      expect_true(dir.exists(file.path("tests", "testthat", "asdf", "api")))
     })
   })
 })

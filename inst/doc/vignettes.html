@@ -14,25 +14,38 @@
 
 <title>Writing Vignettes with APIs</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -50,55 +63,54 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -107,13 +119,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -125,7 +144,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -141,45 +340,134 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<p>Package vignettes (like this!) are a valuable way to show how to use your code. But if you’re demonstrating a package that communicates with a remote API, it has been difficult to write useful vignettes. <code>R CMD check</code> tests that package vignettes, when they are dynamically generated by Sweave or R Markdown, can successfully be rebuilt. If your API requires authentication to use, you’d need to distribute your login credentials for the vignette to build, and that’s generally not a good idea. Plus, building would require a stable network connection, without which you might get spurious build failures and CRAN submission rejections. Workarounds for these challenges, such as writing static vignettes that only appear to do work, present other problems: they’re lots of work to maintain and easily become out of sync with the package.</p>
-<p><code>httptest</code> solves these problems. By adding as little as one line of code to your vignette, you can safely record API responses from a live session. These API responses are scrubbed of sensitive personal information and stored in a subfolder in your <code>vignettes</code> directory. Subsequent vignette builds, including on continuous-integration services, CRAN, and your package users’ computers, use these recorded responses, allowing the document to regenerate without a network connection or API credentials. To record fresh API responses, delete the subfolder of cached responses and re-run.</p>
-<p>This vignette shows you how. To see an example in the wild, see the <a href="https://enpiar.com/r/pivotaltrackR/articles/pivotaltrackR.html">introduction vignette to <code>pivotaltrackR</code></a> (<a href="https://github.com/nealrichardson/pivotaltrackR/blob/master/vignettes/pivotaltrackR.Rmd">source</a>). While this discussion is focused on package vignettes, the same behavior should work in any R Markdown document.</p>
+<p>Package vignettes (like this!) are a valuable way to show how to use
+your code. But if you’re demonstrating a package that communicates with
+a remote API, it has been difficult to write useful vignettes.
+<code>R CMD check</code> tests that package vignettes, when they are
+dynamically generated by Sweave or R Markdown, can successfully be
+rebuilt. If your API requires authentication to use, you’d need to
+distribute your login credentials for the vignette to build, and that’s
+generally not a good idea. Plus, building would require a stable network
+connection, without which you might get spurious build failures and CRAN
+submission rejections. Workarounds for these challenges, such as writing
+static vignettes that only appear to do work, present other problems:
+they’re lots of work to maintain and easily become out of sync with the
+package.</p>
+<p><code>httptest</code> solves these problems. By adding as little as
+one line of code to your vignette, you can safely record API responses
+from a live session. These API responses are scrubbed of sensitive
+personal information and stored in a subfolder in your
+<code>vignettes</code> directory. Subsequent vignette builds, including
+on continuous-integration services, CRAN, and your package users’
+computers, use these recorded responses, allowing the document to
+regenerate without a network connection or API credentials. To record
+fresh API responses, delete the subfolder of cached responses and
+re-run.</p>
+<p>This vignette shows you how. To see an example in the wild, see the
+<a href="https://enpiar.com/r/pivotaltrackR/articles/pivotaltrackR.html">introduction
+vignette to <code>pivotaltrackR</code></a> (<a href="https://github.com/nealrichardson/pivotaltrackR/blob/master/vignettes/pivotaltrackR.Rmd">source</a>).
+While this discussion is focused on package vignettes, the same behavior
+should work in any R Markdown document.</p>
 <div id="the-basics-start_vignette" class="section level1">
 <h1>The basics: <code>start_vignette()</code></h1>
-<p>Getting started is easy. At the beginning of your R Markdown document, add this code chunk:</p>
+<p>Getting started is easy. At the beginning of your R Markdown
+document, add this code chunk:</p>
 <pre><code>`​``{r, include=FALSE}
 library(httptest)
 start_vignette(&quot;vignette-name&quot;)
 ```</code></pre>
-<p>changing <code>vignette-name</code> to something meaningful, such as the name of your <code>.Rmd</code> file. <code>start_vignette()</code> works by checking for the existence of a directory with the name you provided. If no directory exists, the vignette proceeds making real API requests and records the responses as fixtures inside the <code>vignette-name</code> directory (that is, it calls <code>start_capturing()</code>). If the directory does exists, great—you’ve previously recorded API responses, so it uses them, loading them with the same <code>use_mock_api()</code> mode you can use in your test suite.</p>
+<p>changing <code>vignette-name</code> to something meaningful, such as
+the name of your <code>.Rmd</code> file. <code>start_vignette()</code>
+works by checking for the existence of a directory with the name you
+provided. If no directory exists, the vignette proceeds making real API
+requests and records the responses as fixtures inside the
+<code>vignette-name</code> directory (that is, it calls
+<code>start_capturing()</code>). If the directory does exists,
+great—you’ve previously recorded API responses, so it uses them, loading
+them with the same <code>use_mock_api()</code> mode you can use in your
+test suite.</p>
 <blockquote>
-<p>Curious about how these recording and mocking contexts work? See <code>vignettes(&quot;httptest&quot;)</code> for an overview; it’s focused on testing rather than vignettes, but the mechanics are the same.</p>
+<p>Curious about how these recording and mocking contexts work? See
+<code>vignettes(&quot;httptest&quot;)</code> for an overview; it’s focused on
+testing rather than vignettes, but the mechanics are the same.</p>
 </blockquote>
-<p>That’s about it! It is a good idea to add an <code>end_vignette()</code> at the end of the document, like</p>
+<p>That’s about it! It is a good idea to add an
+<code>end_vignette()</code> at the end of the document, like</p>
 <pre><code>`​``{r, include=FALSE}
 end_vignette()
 ```</code></pre>
-<p>This turns off the request recording or mocking and cleans up the R session state. It’s not necessary if you build each vignette in a clean R process and quit on completion (everything is cleaned up when R exits), but having the <code>end_vignette()</code> call is good in case you build your documents in an interactive session.</p>
-<p>Note that these code chunks have <code>include=FALSE</code>. This prevents them from being printed in the resulting Markdown, HTML, PDF, or whatever format document you produce. They’re doing work behind the scenes, so you don’t need them to be shown to your readers.</p>
+<p>This turns off the request recording or mocking and cleans up the R
+session state. It’s not necessary if you build each vignette in a clean
+R process and quit on completion (everything is cleaned up when R
+exits), but having the <code>end_vignette()</code> call is good in case
+you build your documents in an interactive session.</p>
+<p>Note that these code chunks have <code>include=FALSE</code>. This
+prevents them from being printed in the resulting Markdown, HTML, PDF,
+or whatever format document you produce. They’re doing work behind the
+scenes, so you don’t need them to be shown to your readers.</p>
 </div>
 <div id="handling-server-state-changes" class="section level1">
 <h1>Handling server state changes</h1>
-<p>If all your vignette does is query an API to get data from it, <code>start_vignette()</code> is all you need. Your actions don’t change the state of anything on the server, so every time you make the same request (at least within your current session), you get the same response.</p>
-<p>Sometimes, though, the purpose of your code is to alter server state: you are creating a database entry, sending a tweet, or other similar action. Suppose you are querying the Twitter API, and you first search for the <code>#rstats</code> hashtag, then you send a tweet with that hashtag, and finally you repeat your search. You’d expect the second search to contain the tweet you just sent.</p>
-<p>To make this work, before any code chunk that will alter server state, call <code>change_state()</code>:</p>
+<p>If all your vignette does is query an API to get data from it,
+<code>start_vignette()</code> is all you need. Your actions don’t change
+the state of anything on the server, so every time you make the same
+request (at least within your current session), you get the same
+response.</p>
+<p>Sometimes, though, the purpose of your code is to alter server state:
+you are creating a database entry, sending a tweet, or other similar
+action. Suppose you are querying the Twitter API, and you first search
+for the <code>#rstats</code> hashtag, then you send a tweet with that
+hashtag, and finally you repeat your search. You’d expect the second
+search to contain the tweet you just sent.</p>
+<p>To make this work, before any code chunk that will alter server
+state, call <code>change_state()</code>:</p>
 <pre><code>`​``{r, include=FALSE}
 change_state()
 ```</code></pre>
-<p>When recording, this adds a new “layer” of recorded responses, and when reading previously recorded responses, it changes to the next layer.</p>
-<p>For a working example, see the <code>pivotaltrackR</code> vignette. It does a query, then creates a record on the server, modifies that record, and then deletes it. All of this is captured in the vignette data and is fully replayable.</p>
+<p>When recording, this adds a new “layer” of recorded responses, and
+when reading previously recorded responses, it changes to the next
+layer.</p>
+<p>For a working example, see the <code>pivotaltrackR</code> vignette.
+It does a query, then creates a record on the server, modifies that
+record, and then deletes it. All of this is captured in the vignette
+data and is fully replayable.</p>
 </div>
 <div id="advanced-topics" class="section level1">
 <h1>Advanced topics</h1>
-<p>Because you’re recording API responses for replay offline, there are a few additional considerations. First, you’ll want to make sure not to expose your personal credentials or other private details in the cached API responses. <code>httptest</code> provides the ability to “redact” responses you record, and by default, all standard authentication methods are redacted from recorded responses. It’s probable that you don’t need to do anything further to have clean responses, but it’s worth verifying. Beyond credentials, there may be other attributes of API responses that you want to modify, such as finding-and-replacing record ids with a shorter or obfuscated value.,</p>
-<p>To modify these responses, you can provide a custom redacting function. A good way to do this that works for both your test suite and your vignettes is to put your custom function in <code>inst/httptest/redact.R</code> in your package, and it will be automatically used whenever your package is loaded. See more about redacting in <code>vignette(&quot;redacting&quot;)</code>.</p>
-<p>Second, depending on how long the URLs are in the API requests you make, you may need to programmatically shorten them if you’re planning on submitting your package to CRAN because it requires file names to be 100 characters or less. Just as you can provide a custom function to modify responses that are recorded, you can provide a function to tweak the request being made in order to map the request to the right file in the mocked context. Importantly, this lets you truncate the URLs, which then map to files.</p>
-<p>To do this, similarly place a function in <code>inst/httptest/request.R</code>. Any time your package is loaded and you’re reading mock (previously recorded) responses, this function will be called on the <code>request</code> object before mapping it to a file.</p>
-<p>If you don’t want to set these request/response processors globally for your tests and vignettes, there are a couple of options. Both of these functions (response redactor and request preprocessor) can be defined and set in your document’s initial code chunk, using <code>set_redactor</code> and <code>set_requester</code>, like this:</p>
+<p>Because you’re recording API responses for replay offline, there are
+a few additional considerations. First, you’ll want to make sure not to
+expose your personal credentials or other private details in the cached
+API responses. <code>httptest</code> provides the ability to “redact”
+responses you record, and by default, all standard authentication
+methods are redacted from recorded responses. It’s probable that you
+don’t need to do anything further to have clean responses, but it’s
+worth verifying. Beyond credentials, there may be other attributes of
+API responses that you want to modify, such as finding-and-replacing
+record ids with a shorter or obfuscated value.,</p>
+<p>To modify these responses, you can provide a custom redacting
+function. A good way to do this that works for both your test suite and
+your vignettes is to put your custom function in
+<code>inst/httptest/redact.R</code> in your package, and it will be
+automatically used whenever your package is loaded. See more about
+redacting in <code>vignette(&quot;redacting&quot;)</code>.</p>
+<p>Second, depending on how long the URLs are in the API requests you
+make, you may need to programmatically shorten them if you’re planning
+on submitting your package to CRAN because it requires file names to be
+100 characters or less. Just as you can provide a custom function to
+modify responses that are recorded, you can provide a function to tweak
+the request being made in order to map the request to the right file in
+the mocked context. Importantly, this lets you truncate the URLs, which
+then map to files.</p>
+<p>To do this, similarly place a function in
+<code>inst/httptest/request.R</code>. Any time your package is loaded
+and you’re reading mock (previously recorded) responses, this function
+will be called on the <code>request</code> object before mapping it to a
+file.</p>
+<p>If you don’t want to set these request/response processors globally
+for your tests and vignettes, there are a couple of options. Both of
+these functions (response redactor and request preprocessor) can be
+defined and set in your document’s initial code chunk, using
+<code>set_redactor</code> and <code>set_requester</code>, like this:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httptest)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -196,8 +484,15 @@ change_state()
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
 <span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>})</span>
 <span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">start_vignette</span>(<span class="st">&quot;stories&quot;</span>)</span></code></pre></div>
-<p>This is useful if you’re writing an R Markdown document outside of the context of a package.</p>
-<p>Alternatively, you can put vignette-specific setup and teardown code for a package in <code>inst/httptest/start-vignette.R</code> and <code>inst/httptest/end-vignette.R</code>, respectively, and like the other <code>inst/httptest</code> files, these will be found and used whenever your package is loaded. This is a good option when you have more than one vignette and you want to share setup code across them without copy-and-paste.</p>
+<p>This is useful if you’re writing an R Markdown document outside of
+the context of a package.</p>
+<p>Alternatively, you can put vignette-specific setup and teardown code
+for a package in <code>inst/httptest/start-vignette.R</code> and
+<code>inst/httptest/end-vignette.R</code>, respectively, and like the
+other <code>inst/httptest</code> files, these will be found and used
+whenever your package is loaded. This is a good option when you have
+more than one vignette and you want to share setup code across them
+without copy-and-paste.</p>
 </div>
 
 

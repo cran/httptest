@@ -14,25 +14,38 @@
 
 <title>httptest: A Test Environment for HTTP Requests in R</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -50,55 +63,54 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -107,13 +119,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -125,7 +144,187 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -137,23 +336,84 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<h1 class="title toc-ignore">httptest: A Test Environment for HTTP Requests in R</h1>
+<h1 class="title toc-ignore">httptest: A Test Environment for HTTP
+Requests in R</h1>
 
 
 
-<p>Testing code and packages that communicate with remote servers can be painful. Dealing with authentication, bootstrapping server state, cleaning up objects that may get created during the test run, network flakiness, and other complications can make testing seem too costly to bother with. But it doesn’t need to be that hard. The <code>httptest</code> package lets you test R code that constructs API requests and handles their responses, all without requiring access to the remote service during the test run. This makes tests easy to write and fast to run.</p>
-<p><code>httptest</code> sits on top of the <a href="https://testthat.r-lib.org/">testthat</a> package and provides test <strong>contexts</strong> that mock the network connection. These let you supply mock API responses for some requests and allow you to assert that HTTP requests were—or were not—made using custom <strong>expectation</strong> functions. The package further includes tools for recording the responses of real requests and storing them as fixtures that you can later load in a test run. Taken together, <code>httptest</code> lets you test that your code is making the intended requests and that it handles the expected responses correctly without depending on a connection to a remote API.</p>
-<p>This vignette covers some of the core features of the <code>httptest</code> package, focusing on how to mock HTTP responses, how to make other assertions about requests, and how to record real requests for future use as mocks. Note that <code>httptest</code> requires the <code>testthat</code> package, and it follows the testing conventions and interfaces defined there, extending them with some additional wrappers and expectations. If you’re not familiar with <code>testthat</code>, see the <a href="https://r-pkgs.org/tests.html">“Testing” chapter</a> chapter of Hadley Wickham’s <em>R Packages</em> book. Furthermore, <code>httptest</code> is designed for use with packages that rely on the <a href="https://httr.r-lib.org/">httr</a> requests library—it is a bridge between <code>httr</code> and <code>testthat</code>.</p>
+<p>Testing code and packages that communicate with remote servers can be
+painful. Dealing with authentication, bootstrapping server state,
+cleaning up objects that may get created during the test run, network
+flakiness, and other complications can make testing seem too costly to
+bother with. But it doesn’t need to be that hard. The
+<code>httptest</code> package lets you test R code that constructs API
+requests and handles their responses, all without requiring access to
+the remote service during the test run. This makes tests easy to write
+and fast to run.</p>
+<p><code>httptest</code> sits on top of the <a href="https://testthat.r-lib.org/">testthat</a> package and provides
+test <strong>contexts</strong> that mock the network connection. These
+let you supply mock API responses for some requests and allow you to
+assert that HTTP requests were—or were not—made using custom
+<strong>expectation</strong> functions. The package further includes
+tools for recording the responses of real requests and storing them as
+fixtures that you can later load in a test run. Taken together,
+<code>httptest</code> lets you test that your code is making the
+intended requests and that it handles the expected responses correctly
+without depending on a connection to a remote API.</p>
+<p>This vignette covers some of the core features of the
+<code>httptest</code> package, focusing on how to mock HTTP responses,
+how to make other assertions about requests, and how to record real
+requests for future use as mocks. Note that <code>httptest</code>
+requires the <code>testthat</code> package, and it follows the testing
+conventions and interfaces defined there, extending them with some
+additional wrappers and expectations. If you’re not familiar with
+<code>testthat</code>, see the <a href="https://r-pkgs.org/tests.html">“Testing” chapter</a> chapter of
+Hadley Wickham’s <em>R Packages</em> book. Furthermore,
+<code>httptest</code> is designed for use with packages that rely on the
+<a href="https://httr.r-lib.org/">httr</a> requests library—it is a
+bridge between <code>httr</code> and <code>testthat</code>.</p>
 <div id="the-with_mock_api-context" class="section level1">
 <h1>The <code>with_mock_api</code> context</h1>
-<p>The package includes three contexts, which are “with”-style functions that you wrap around other code you want to execute. The most generally useful of the three is <code>with_mock_api()</code>. In this context, HTTP requests are intercepted and mapped to local file paths. If the file exists, it is loaded and returned as the response; if it does not, an error with a message containing the request information is raised, and we can write tests that look for that error. These two different modes allow us to make assertions about two different kinds of logic: (1) given some inputs, does my code make the correct HTTP request(s); and (2) does my code correctly handle the types of responses that the server can return?</p>
+<p>The package includes three contexts, which are “with”-style functions
+that you wrap around other code you want to execute. The most generally
+useful of the three is <code>with_mock_api()</code>. In this context,
+HTTP requests are intercepted and mapped to local file paths. If the
+file exists, it is loaded and returned as the response; if it does not,
+an error with a message containing the request information is raised,
+and we can write tests that look for that error. These two different
+modes allow us to make assertions about two different kinds of logic:
+(1) given some inputs, does my code make the correct HTTP request(s);
+and (2) does my code correctly handle the types of responses that the
+server can return?</p>
 <div id="example" class="section level2">
 <h2>Example</h2>
-<p>To illustrate the power of <code>with_mock_api</code>, let’s try to add tests to an R package that wraps a prominent web API. The <code>twitteR</code> package is quite popular (<a href="https://cranlogs.r-pkg.org/badges/twitteR">13k downloads per month</a>, at the time of writing), but like most R packages, it doesn’t have a test suite. Indeed, it is hard to test the querying of an API that requires OAuth authentication, and thus a user account to use in testing. That’s tricky to set up to run locally, and even more challenging to run on a continuous-integration service like Travis-CI. But <code>httptest</code> can help.</p>
-<p>First, we need to add <code>httptest</code> to our package test suite. Once you’ve configured your package to use <code>testthat</code> (<code>usethis::use_testthat()</code> is one way), run <code>httptest::use_httptest()</code>. This adds <code>httptest</code> to your package <code>DESCRIPTION</code> and makes sure it is loaded in your test setup code.</p>
-<p>Now we can start with our tests. From some experimenting, it’s clear that the package checks to see if you have an OAuth token set. We’re not actually going to hit the real Twitter API, so we don’t need a valid token—we just need a token to exist so the R code that looks for a token finds one:</p>
+<p>To illustrate the power of <code>with_mock_api</code>, let’s try to
+add tests to an R package that wraps a prominent web API. The
+<code>twitteR</code> package is quite popular (<a href="https://cranlogs.r-pkg.org/badges/twitteR">13k downloads per
+month</a>, at the time of writing), but like most R packages, it doesn’t
+have a test suite. Indeed, it is hard to test the querying of an API
+that requires OAuth authentication, and thus a user account to use in
+testing. That’s tricky to set up to run locally, and even more
+challenging to run on a continuous-integration service like Travis-CI.
+But <code>httptest</code> can help.</p>
+<p>First, we need to add <code>httptest</code> to our package test
+suite. Once you’ve configured your package to use <code>testthat</code>
+(<code>usethis::use_testthat()</code> is one way), run
+<code>httptest::use_httptest()</code>. This adds <code>httptest</code>
+to your package <code>DESCRIPTION</code> and makes sure it is loaded in
+your test setup code.</p>
+<p>Now we can start with our tests. From some experimenting, it’s clear
+that the package checks to see if you have an OAuth token set. We’re not
+actually going to hit the real Twitter API, so we don’t need a valid
+token—we just need a token to exist so the R code that looks for a token
+finds one:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">use_oauth_token</span>(<span class="st">&quot;foo&quot;</span>)</span></code></pre></div>
-<p>Let’s write a test. Add “test-user.R” to your test directory and put a test for getting a user record, via the <code>getUser</code> function. According to the source code, this function should hit the “show user” Twitter API, documented <a href="https://dev.twitter.com/rest/reference/get/users/show">here</a>. But, we’re going to prevent that request from actually happening by wrapping our test in the <code>with_mock_api</code>.</p>
+<p>Let’s write a test. Add “test-user.R” to your test directory and put
+a test for getting a user record, via the <code>getUser</code> function.
+According to the source code, this function should hit the “show user”
+Twitter API, documented <a href="https://dev.twitter.com/rest/reference/get/users/show">here</a>.
+But, we’re going to prevent that request from actually happening by
+wrapping our test in the <code>with_mock_api</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">context</span>(<span class="st">&quot;Get a user&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">with_mock_api</span>({</span>
@@ -165,10 +425,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>Get a user: Error:
     GET https://api.twitter.com/1.1/users/show.json?screen_name=twitterdev
     (api.twitter.com/1.1/users/show.json-84627b.json)</code></pre>
-<p>The error message reveals a few things about how <code>with_mock_api</code> works. First, it tells us what the request method and URL was, and if there had been a request body, it would have been part of the error message as well. Second, the final part of the error message is a file name. That’s the mock file that the test context was looking for and didn’t find. If the file had existed, it would have been loaded and the code would have continued executing <em>as if the server had returned it</em>.</p>
-<p>Requests are translated to mock file paths according to several rules that incorporate the request method, URL, query parameters, and body. Query parameters and request bodies are incorporated into the file path by hashing—hence the <code>84627b</code> in the <code>getUser</code> example. If a request method other than GET is used, it will be appended to the end of the end of the file name. Mock file paths also have an extension appended because in an HTTP API, a “directory” itself is a resource. The extension allows distinguishing directories and files in the file system. That is, a mocked <code>GET(&quot;http://example.com/api/&quot;)</code> may read a “example.com/api.json” file, while <code>GET(&quot;http://example.com/api/object1/&quot;)</code> reads “example.com/api/object1.json”, and <code>POST(&quot;api/object1/?a=1&quot;)</code> would map to “api/object1-b64371-POST.json”.</p>
-<p>The file extension also gives information on content type. Files with <code>.json</code>, <code>.html</code>, <code>.xml</code>, <code>.txt</code>, <code>.csv</code>, and <code>.tsv</code> are loaded directly by <code>with_mock_api</code>, and relevant request metadata (<code>Content-Type</code> header, status code 200, etc.) are inferred. If your API doesn’t return one of these types, or if you want to simulate requests with other behavior (201 Location response, or 400 Bad Request, for example), you can store full <code>response</code> objects in .R files that <code>with_mock_api</code> will <code>source</code> to load. Any request can be stored as a .R mock, but the <code>.json</code> and other media types offer a simplified, more readable alternative.</p>
-<p>Back to the <code>getUser</code> example. The error message tells us that the request it is making—<code>GET https://api.twitter.com/1.1/users/show.json?screen_name=twitterdev</code>—is what we should expect based on the API documentation, so that’s good. Now let’s provide a mock response. The API documentation page has an example JSON response, which looks like</p>
+<p>The error message reveals a few things about how
+<code>with_mock_api</code> works. First, it tells us what the request
+method and URL was, and if there had been a request body, it would have
+been part of the error message as well. Second, the final part of the
+error message is a file name. That’s the mock file that the test context
+was looking for and didn’t find. If the file had existed, it would have
+been loaded and the code would have continued executing <em>as if the
+server had returned it</em>.</p>
+<p>Requests are translated to mock file paths according to several rules
+that incorporate the request method, URL, query parameters, and body.
+Query parameters and request bodies are incorporated into the file path
+by hashing—hence the <code>84627b</code> in the <code>getUser</code>
+example. If a request method other than GET is used, it will be appended
+to the end of the end of the file name. Mock file paths also have an
+extension appended because in an HTTP API, a “directory” itself is a
+resource. The extension allows distinguishing directories and files in
+the file system. That is, a mocked
+<code>GET(&quot;http://example.com/api/&quot;)</code> may read a
+“example.com/api.json” file, while
+<code>GET(&quot;http://example.com/api/object1/&quot;)</code> reads
+“example.com/api/object1.json”, and
+<code>POST(&quot;api/object1/?a=1&quot;)</code> would map to
+“api/object1-b64371-POST.json”.</p>
+<p>The file extension also gives information on content type. Files with
+<code>.json</code>, <code>.html</code>, <code>.xml</code>,
+<code>.txt</code>, <code>.csv</code>, and <code>.tsv</code> are loaded
+directly by <code>with_mock_api</code>, and relevant request metadata
+(<code>Content-Type</code> header, status code 200, etc.) are inferred.
+If your API doesn’t return one of these types, or if you want to
+simulate requests with other behavior (201 Location response, or 400 Bad
+Request, for example), you can store full <code>response</code> objects
+in .R files that <code>with_mock_api</code> will <code>source</code> to
+load. Any request can be stored as a .R mock, but the <code>.json</code>
+and other media types offer a simplified, more readable alternative.</p>
+<p>Back to the <code>getUser</code> example. The error message tells us
+that the request it is
+making—<code>GET https://api.twitter.com/1.1/users/show.json?screen_name=twitterdev</code>—is
+what we should expect based on the API documentation, so that’s good.
+Now let’s provide a mock response. The API documentation page has an
+example JSON response, which looks like</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id&quot;</span><span class="fu">:</span> <span class="dv">2244994945</span><span class="fu">,</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;id_str&quot;</span><span class="fu">:</span> <span class="st">&quot;2244994945&quot;</span><span class="fu">,</span></span>
@@ -182,21 +478,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;url&quot;</span><span class="fu">:</span> <span class="st">&quot;https://t.co/66w26cua1O&quot;</span><span class="fu">,</span></span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="er">...</span></span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
-<p>Let’s copy that example response to the fixture file path that the message indicated, <code>api.twitter.com/1.1/users/show.json-84627b.json</code>. When we run the tests again, there’s no more error. Great! This means that <code>with_mock_api</code> loaded our mock when it reached the GET request, and the rest of the code continued executing. <code>getUser</code> returns a “user” object, so let’s now assert some things about it and test some of its methods:</p>
+<p>Let’s copy that example response to the fixture file path that the
+message indicated,
+<code>api.twitter.com/1.1/users/show.json-84627b.json</code>. When we
+run the tests again, there’s no more error. Great! This means that
+<code>with_mock_api</code> loaded our mock when it reached the GET
+request, and the rest of the code continued executing.
+<code>getUser</code> returns a “user” object, so let’s now assert some
+things about it and test some of its methods:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;We can get a user object&quot;</span>, {</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  user <span class="ot">&lt;-</span> <span class="fu">getUser</span>(<span class="st">&quot;twitterdev&quot;</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_is</span>(user, <span class="st">&quot;user&quot;</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_identical</span>(user<span class="sc">$</span>name, <span class="st">&quot;TwitterDev&quot;</span>)</span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_output</span>(<span class="fu">print</span>(user), <span class="st">&quot;TwitterDev&quot;</span>)</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>We can do the same for the <code>lookupUsers</code> function. It should hit the <code>users/lookup.json</code> endpoint and the function should return a list of <code>user</code> objects:</p>
+<p>We can do the same for the <code>lookupUsers</code> function. It
+should hit the <code>users/lookup.json</code> endpoint and the function
+should return a list of <code>user</code> objects:</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;lookupUsers retrieves many&quot;</span>, {</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  result <span class="ot">&lt;-</span> <span class="fu">lookupUsers</span>(<span class="fu">c</span>(<span class="st">&quot;twitterapi&quot;</span>, <span class="st">&quot;twitter&quot;</span>))</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_is</span>(result, <span class="st">&quot;list&quot;</span>)</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">vapply</span>(result, inherits, <span class="fu">logical</span>(<span class="dv">1</span>), <span class="at">what =</span> <span class="st">&quot;user&quot;</span>)))</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>Drop the example response from the <a href="https://dev.twitter.com/rest/reference/get/users/lookup">API documentation</a> in the right location, and that passes as well.</p>
-<p>We just went from zero tests to 25 percent line coverage in a few minutes, using 16 lines of code. We’ve tested a lot of the code that prepares the requests of the user API, and we’ve tested much of the code that handles the server’s response, the “user” objects that get created in R, and their methods. Our resulting test directory, containing both our test files and our API fixtures, looks like this:</p>
+<p>Drop the example response from the <a href="https://dev.twitter.com/rest/reference/get/users/lookup">API
+documentation</a> in the right location, and that passes as well.</p>
+<p>We just went from zero tests to 25 percent line coverage in a few
+minutes, using 16 lines of code. We’ve tested a lot of the code that
+prepares the requests of the user API, and we’ve tested much of the code
+that handles the server’s response, the “user” objects that get created
+in R, and their methods. Our resulting test directory, containing both
+our test files and our API fixtures, looks like this:</p>
 <pre><code>tests
 ├── testthat
 │   ├── api.twitter.com
@@ -227,35 +538,100 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect_true</span>(<span class="fu">all</span>(<span class="fu">vapply</span>(result, inherits, <span class="fu">logical</span>(<span class="dv">1</span>), <span class="at">what =</span> <span class="st">&quot;user&quot;</span>)))</span>
 <span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  })</span>
 <span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>Note that none of the test code inside the <code>with_mock_api</code> block looks any different from how you’d write it if you were testing against a live server using just <code>testthat</code>. The goal is to make your tests just as natural to write as if you were using your package normally. The <code>with_mock_api</code> context handles all of the HTTP mocking seamlessly.</p>
+<p>Note that none of the test code inside the <code>with_mock_api</code>
+block looks any different from how you’d write it if you were testing
+against a live server using just <code>testthat</code>. The goal is to
+make your tests just as natural to write as if you were using your
+package normally. The <code>with_mock_api</code> context handles all of
+the HTTP mocking seamlessly.</p>
 </div>
 </div>
 <div id="recording-mocks-with-capture_requests" class="section level1">
 <h1>Recording mocks with <code>capture_requests</code></h1>
-<p>Using API documentation to build a library of fixtures is one way to set up testing using <code>with_mock_api</code>. Alternatively, you can collect real HTTP responses to use as test fixtures. <code>capture_requests()</code> is a context that records the responses from requests you make and stores them as mock files. This enables you to perform a series of requests against a live server once and then build your test suite using those mocks, running your tests in <code>with_mock_api</code>.</p>
-<p>In an interactive session, it may be easier to use the functions <code>start_capturing</code> and <code>stop_capturing</code> rather than the context manager. You can set up your R session, call <code>start_capturing()</code>, and then do whatever commands or function calls that would make HTTP requests, and the responses will be grabbed.</p>
+<p>Using API documentation to build a library of fixtures is one way to
+set up testing using <code>with_mock_api</code>. Alternatively, you can
+collect real HTTP responses to use as test fixtures.
+<code>capture_requests()</code> is a context that records the responses
+from requests you make and stores them as mock files. This enables you
+to perform a series of requests against a live server once and then
+build your test suite using those mocks, running your tests in
+<code>with_mock_api</code>.</p>
+<p>In an interactive session, it may be easier to use the functions
+<code>start_capturing</code> and <code>stop_capturing</code> rather than
+the context manager. You can set up your R session, call
+<code>start_capturing()</code>, and then do whatever commands or
+function calls that would make HTTP requests, and the responses will be
+grabbed.</p>
 <p>We could do something like</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">start_capturing</span>()</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">searchTwitter</span>(<span class="st">&quot;#rstats&quot;</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stop_capturing</span>()</span></code></pre></div>
-<p>and as a result, we’d see a file created with a path/name of <code>api.twitter.com/1.1/search/tweets.json-ca54df.json</code>. The file will contain a JSON containing status matching the search query, per the <a href="https://dev.twitter.com/rest/reference/get/search/tweets">docs</a>.</p>
-<p>Both the <code>capture_requests</code> context and the <code>start_capturing</code> function follow the path setting of <code>.mockPaths()</code>, which lets you specify a location other than the current working directory to which to write the response files. They also have a “simplify” argument that, when <code>TRUE</code> (the default), it records simplified <code>.json</code>, <code>.csv</code>, <code>.xml</code>, et al. files where appropriate (200 OK response with a supported <code>Content-Type</code>) and .R full “response” objects otherwise.</p>
-<p>While recording responses to use later in tests can be very convenient, we don’t always want to use captured responses, or at least not blindly. Real responses may contain information you want to sanitize or redact, like usernames, emails, or tokens. And real responses may be too big or messy to want to deal with. You may want to pare back a large set of results that a query returns down to four or five results and still have enough variation to test with.</p>
+<p>and as a result, we’d see a file created with a path/name of
+<code>api.twitter.com/1.1/search/tweets.json-ca54df.json</code>. The
+file will contain a JSON containing status matching the search query,
+per the <a href="https://dev.twitter.com/rest/reference/get/search/tweets">docs</a>.</p>
+<p>Both the <code>capture_requests</code> context and the
+<code>start_capturing</code> function follow the path setting of
+<code>.mockPaths()</code>, which lets you specify a location other than
+the current working directory to which to write the response files. They
+also have a “simplify” argument that, when <code>TRUE</code> (the
+default), it records simplified <code>.json</code>, <code>.csv</code>,
+<code>.xml</code>, et al. files where appropriate (200 OK response with
+a supported <code>Content-Type</code>) and .R full “response” objects
+otherwise.</p>
+<p>While recording responses to use later in tests can be very
+convenient, we don’t always want to use captured responses, or at least
+not blindly. Real responses may contain information you want to sanitize
+or redact, like usernames, emails, or tokens. And real responses may be
+too big or messy to want to deal with. You may want to pare back a large
+set of results that a query returns down to four or five results and
+still have enough variation to test with.</p>
 <div id="automatically-recordingplaying-back-the-with_mock_dir-context" class="section level2">
-<h2>Automatically recording/playing back: the <code>with_mock_dir()</code> context</h2>
-<p>The <code>with_mock_dir()</code> context can help you create mock files when they don’t exist yet, and to easily re-record them. For example:</p>
+<h2>Automatically recording/playing back: the
+<code>with_mock_dir()</code> context</h2>
+<p>The <code>with_mock_dir()</code> context can help you create mock
+files when they don’t exist yet, and to easily re-record them. For
+example:</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with_mock_dir</span>(<span class="st">&quot;httpbin-get&quot;</span>, {</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://httpbin.org/get&quot;</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>The first time you run the code, it will create the folder <code>tests/testthat/httpbin-get</code>, and create mock files under it. The next times you run it, it will <em>use</em> the mock files in <code>tests/testthat/httpbin-get</code>. To re-record, simply delete the folder.</p>
+<p>The first time you run the code, it will create the folder
+<code>tests/testthat/httpbin-get</code>, and create mock files under it.
+The next times you run it, it will <em>use</em> the mock files in
+<code>tests/testthat/httpbin-get</code>. To re-record, simply delete the
+folder.</p>
 </div>
 </div>
 <div id="mocks-are-text-files" class="section level1">
 <h1>Mocks are text files</h1>
-<p><code>httptest</code> stores these API mocks as plain-text files, which has several nice features, particularly relative to storing serialized (binary) R objects. You can more easily confirm that your mocks look correct, and you can more easily maintain them without having to re-record them. When you do edit them, text files are more easily handled by version-control systems like Git and Mercurial. Plain-text files can also have comments, so you can make notes as to why a certain fixture exists, what a particular value means, and so on, which will help the users of your package—and your future self!</p>
-<p>By having mocks in human-readable text files, you can also more easily extend your code. APIs are living things that evolve over time, and your code that communicates with an API needs to be able to change with them. If the API adds an additional attribute to an object, no big deal: just touch up the mocks. In addition, you can future-proof your code against that kind of API change by tweaking a fixture file. In <a href="https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34">this example</a> from the <code>crunch</code> package, an extra, nonsense attribute was added to the JSON just to ensure that the code doesn’t break if there are new, unknown features added to the API response. That way, if the API grows new features, people who are using your package don’t get errors if they haven’t upgraded to the latest release that recognizes the new feature.</p>
-<p>If you’re responsible for the API as well as the R client code that communicates with it, the plain-text mocks can be a valuable source of documentation. Indeed, the file-system tree view of the mock files gives a visual representation of your API. For example, in the <a href="https://crunch.io/r/crunch/">crunch</a> package, the mocks show an API of catalogs that contain entities that may contain other subdocuments:</p>
+<p><code>httptest</code> stores these API mocks as plain-text files,
+which has several nice features, particularly relative to storing
+serialized (binary) R objects. You can more easily confirm that your
+mocks look correct, and you can more easily maintain them without having
+to re-record them. When you do edit them, text files are more easily
+handled by version-control systems like Git and Mercurial. Plain-text
+files can also have comments, so you can make notes as to why a certain
+fixture exists, what a particular value means, and so on, which will
+help the users of your package—and your future self!</p>
+<p>By having mocks in human-readable text files, you can also more
+easily extend your code. APIs are living things that evolve over time,
+and your code that communicates with an API needs to be able to change
+with them. If the API adds an additional attribute to an object, no big
+deal: just touch up the mocks. In addition, you can future-proof your
+code against that kind of API change by tweaking a fixture file. In <a href="https://github.com/Crunch-io/rcrunch/blob/49cf2526c0c54d05550b6401e0b97a0beeaa1640/inst/app.crunch.io/api/datasets/1.json#L34">this
+example</a> from the <code>crunch</code> package, an extra, nonsense
+attribute was added to the JSON just to ensure that the code doesn’t
+break if there are new, unknown features added to the API response. That
+way, if the API grows new features, people who are using your package
+don’t get errors if they haven’t upgraded to the latest release that
+recognizes the new feature.</p>
+<p>If you’re responsible for the API as well as the R client code that
+communicates with it, the plain-text mocks can be a valuable source of
+documentation. Indeed, the file-system tree view of the mock files gives
+a visual representation of your API. For example, in the <a href="https://crunch.io/r/crunch/">crunch</a> package, the mocks show an
+API of catalogs that contain entities that may contain other
+subdocuments:</p>
 <pre><code>app.crunch.io/
 ├── api
 │   ├── accounts
@@ -295,9 +671,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="testing-that-requests-arent-made" class="section level1">
 <h1>Testing that requests aren’t made</h1>
-<p>Mocking API responses isn’t the only thing you might want to do in order to test your code. Sometimes, the request that matters is the one you don’t make. <code>httptest</code> provides several tools to test requests without concern for the responses, as well as the ability to ensure that requests aren’t made when they shouldn’t be.</p>
-<p><code>without_internet</code> is a context that simulates the situation when any network request will fail, as in when you are without an internet connection. Any HTTP request will raise an error with a well-defined shape, the same as what <code>with_mock_api</code> returns when no mock file is found. The error message has three elements: the request method (e.g. “GET”), the request URL, and the request body, if present. The verb-expectation functions, such as <code>expect_GET</code> and <code>expect_POST</code>, look for this shape.</p>
-<p>Here’s a example of how <code>without_internet</code> can be used to assert that code that should not make network requests in fact does not. This is a simplified version of a test from the <a href="https://enpiar.com/r/httpcache/">httpcache</a> package, a library that implements a query cache for HTTP requests in R. The point of the query cache is that only the first time you make a certain GET request should it hit the remote API; subsequent requests should read from the cache and not make a request. The test first makes a request (artificially, using <code>with_fake_http</code>, the third test context the package provides) to prime the cache.</p>
+<p>Mocking API responses isn’t the only thing you might want to do in
+order to test your code. Sometimes, the request that matters is the one
+you don’t make. <code>httptest</code> provides several tools to test
+requests without concern for the responses, as well as the ability to
+ensure that requests aren’t made when they shouldn’t be.</p>
+<p><code>without_internet</code> is a context that simulates the
+situation when any network request will fail, as in when you are without
+an internet connection. Any HTTP request will raise an error with a
+well-defined shape, the same as what <code>with_mock_api</code> returns
+when no mock file is found. The error message has three elements: the
+request method (e.g. “GET”), the request URL, and the request body, if
+present. The verb-expectation functions, such as <code>expect_GET</code>
+and <code>expect_POST</code>, look for this shape.</p>
+<p>Here’s a example of how <code>without_internet</code> can be used to
+assert that code that should not make network requests in fact does not.
+This is a simplified version of a test from the <a href="https://enpiar.com/r/httpcache/">httpcache</a> package, a library
+that implements a query cache for HTTP requests in R. The point of the
+query cache is that only the first time you make a certain GET request
+should it hit the remote API; subsequent requests should read from the
+cache and not make a request. The test first makes a request
+(artificially, using <code>with_fake_http</code>, the third test context
+the package provides) to prime the cache.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with_fake_http</span>({</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test_that</span>(<span class="st">&quot;Cache gets set on GET&quot;</span>, {</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect_length</span>(<span class="fu">cacheKeys</span>(), <span class="dv">0</span>)</span>
@@ -307,7 +702,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect_identical</span>(a, <span class="fu">getCache</span>(<span class="st">&quot;https://app.crunch.io/api/&quot;</span>))</span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  })</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>Then, using <code>without_internet</code>, the test checks two things: first, that doing the same GET succeeds because it reads from cache; and second, that if you bypass the query cache, you get an error because you tried to make a network request.</p>
+<p>Then, using <code>without_internet</code>, the test checks two
+things: first, that doing the same GET succeeds because it reads from
+cache; and second, that if you bypass the query cache, you get an error
+because you tried to make a network request.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">without_internet</span>({</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">test_that</span>(<span class="st">&quot;When the cache is set, can read from it even with no connection&quot;</span>, {</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">expect_identical</span>(<span class="fu">GET</span>(<span class="st">&quot;https://app.crunch.io/api/&quot;</span>)<span class="sc">$</span>url,</span>
@@ -318,29 +716,76 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;GET https://app.crunch.io/api/&quot;</span>)</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  })</span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>This tells us that our cache is working as expected: we can get results from cache and we don’t make a (potentially expensive) network request more than once.</p>
+<p>This tells us that our cache is working as expected: we can get
+results from cache and we don’t make a (potentially expensive) network
+request more than once.</p>
 <div id="assert-the-shape-of-request-payloads" class="section level2">
 <h2>Assert the shape of request payloads</h2>
-<p>Sometimes it is more clear what you’re testing if you focus only on the requests. One case is when the response itself isn’t that interesting or doesn’t tell you that the request did the correct thing. For example, if you’re testing a POST request that alters the state of something on the server and returns 204 No Content status on success, nothing in the response itself (which would be stored in the mock file) tells you that the request you made was shaped correctly—the response has no content. A more transparent, readable test would just assert that the POST request was made to the right URL and had the expected request body.</p>
-<p>Both <code>without_internet</code> and <code>with_mock_api</code> allow you to make assertions about requests—method, URL, and payload—that should be made. The various <code>expect_VERB</code> expectation functions facilitate this testing. In this example from the <code>crunch</code> package, inside the <code>with_mock_api</code> context, there is a catalog resource containing three entities, each of which has an “archived” attribute. The <code>is.archived</code> method returns the value of that attribute:</p>
+<p>Sometimes it is more clear what you’re testing if you focus only on
+the requests. One case is when the response itself isn’t that
+interesting or doesn’t tell you that the request did the correct thing.
+For example, if you’re testing a POST request that alters the state of
+something on the server and returns 204 No Content status on success,
+nothing in the response itself (which would be stored in the mock file)
+tells you that the request you made was shaped correctly—the response
+has no content. A more transparent, readable test would just assert that
+the POST request was made to the right URL and had the expected request
+body.</p>
+<p>Both <code>without_internet</code> and <code>with_mock_api</code>
+allow you to make assertions about requests—method, URL, and
+payload—that should be made. The various <code>expect_VERB</code>
+expectation functions facilitate this testing. In this example from the
+<code>crunch</code> package, inside the <code>with_mock_api</code>
+context, there is a catalog resource containing three entities, each of
+which has an “archived” attribute. The <code>is.archived</code> method
+returns the value of that attribute:</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;is.archived&quot;</span>, {</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_identical</span>(<span class="fu">is.archived</span>(catalog), <span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>When we update the attributes of the catalog’s entities, we send a PATCH request, and we only want to send values that are changing. That way, we don’t unintentionally collide with any other concurrent actions happening on the server, and we can send smaller messages, which should be faster. In this example, if we were to set “archived” to <code>TRUE</code> for the second and third elements of the catalog, we’d only want to send a PATCH request that referenced the third element because the second one is already <code>TRUE</code>.</p>
+<p>When we update the attributes of the catalog’s entities, we send a
+PATCH request, and we only want to send values that are changing. That
+way, we don’t unintentionally collide with any other concurrent actions
+happening on the server, and we can send smaller messages, which should
+be faster. In this example, if we were to set “archived” to
+<code>TRUE</code> for the second and third elements of the catalog, we’d
+only want to send a PATCH request that referenced the third element
+because the second one is already <code>TRUE</code>.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;&#39;archive&#39; sets the archived attribute and only PATCHes changes&quot;</span>, {</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_PATCH</span>(<span class="fu">archive</span>(catalog[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>]),</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;https://app.crunch.io/api/datasets/&#39;</span>,</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;{&quot;https://app.crunch.io/api/datasets/3/&quot;:{&quot;archived&quot;:true}}&#39;</span>)</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>The resulting state of the system is the same whether the smaller PATCH request is sent or whether the overly verbose one is sent. If you’ve written logic in your R code to ensure that the smaller PATCH is sent, testing the shape of the request being made is the clearest way to demonstrate and assert that the desired behavior is happening.</p>
-<p>Another instance of when you might care more about request body shape rather than the resulting response is when there are multiple paths in your R code that should lead to the same request being made. If you can assert that all of those variations result in the same request, then when it comes to testing the response and how your code handles it, you can do that once and not have to repeat for all of the input variations. This is particularly useful in conjunction with integration tests that run against a live server because it means you can have the same test coverage with fewer integration tests.</p>
-<p>An example of this from the <code>crunch</code> package is in testing a <code>join</code> function, which has a similar syntax to the base R <code>merge</code> function. <code>merge</code> takes “by.x” and “by.y” arguments, which point to the variables in the “x” and “y” data.frames on which to match the rows when merging. It has a shortcut for the case where the variable have the same names in both data.frame, in which case you can just specify a “by” argument. To test that all of those combinations of specifying join keys result in the same request, the test defines a payload string to reuse</p>
+<p>The resulting state of the system is the same whether the smaller
+PATCH request is sent or whether the overly verbose one is sent. If
+you’ve written logic in your R code to ensure that the smaller PATCH is
+sent, testing the shape of the request being made is the clearest way to
+demonstrate and assert that the desired behavior is happening.</p>
+<p>Another instance of when you might care more about request body shape
+rather than the resulting response is when there are multiple paths in
+your R code that should lead to the same request being made. If you can
+assert that all of those variations result in the same request, then
+when it comes to testing the response and how your code handles it, you
+can do that once and not have to repeat for all of the input variations.
+This is particularly useful in conjunction with integration tests that
+run against a live server because it means you can have the same test
+coverage with fewer integration tests.</p>
+<p>An example of this from the <code>crunch</code> package is in testing
+a <code>join</code> function, which has a similar syntax to the base R
+<code>merge</code> function. <code>merge</code> takes “by.x” and “by.y”
+arguments, which point to the variables in the “x” and “y” data.frames
+on which to match the rows when merging. It has a shortcut for the case
+where the variable have the same names in both data.frame, in which case
+you can just specify a “by” argument. To test that all of those
+combinations of specifying join keys result in the same request, the
+test defines a payload string to reuse</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>testPayload <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;{&quot;https://app.crunch.io/api/datasets/1/joins/95c0b45fe0af492594863f818cb913d2/&quot;:&#39;</span>,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;{&quot;left_key&quot;:&quot;https://app.crunch.io/api/datasets/1/variables/birthyr/&quot;,&#39;</span>,</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;&quot;right_key&quot;:&quot;https://app.crunch.io/api/datasets/3/variables/birthyr/&quot;}}&#39;</span></span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<p>and then asserts that three different ways of calling <code>join</code> result in the same <code>PATCH</code> request being made</p>
+<p>and then asserts that three different ways of calling
+<code>join</code> result in the same <code>PATCH</code> request being
+made</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Can specify &#39;by&#39; variables several ways&quot;</span>, {</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_PATCH</span>(<span class="fu">join</span>(ds1, ds2, <span class="at">by.x =</span> ds1<span class="sc">$</span>birthyr, ds2<span class="sc">$</span>birthyr),</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;https://app.crunch.io/api/datasets/1/joins/&#39;</span>,</span>
@@ -352,12 +797,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;https://app.crunch.io/api/datasets/1/joins/&#39;</span>,</span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    testPayload)</span>
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
-<p>Subsequent integration tests that assert that the dataset is correctly modified on the server by <code>join</code> then only test with one of those ways of specifying the “by” variables. The R code that constructs the request is fully covered by these assertions.</p>
+<p>Subsequent integration tests that assert that the dataset is
+correctly modified on the server by <code>join</code> then only test
+with one of those ways of specifying the “by” variables. The R code that
+constructs the request is fully covered by these assertions.</p>
 </div>
 </div>
 <div id="just-test-it" class="section level1">
 <h1>Just test it</h1>
-<p>The goal of <code>httptest</code> is to remove a big obstacle to testing code that communicates with HTTP services: the HTTP service itself. If <a href="https://github.com/r-lib/httr/blob/master/R/httr.r#L1"><code>httr</code> makes HTTP easy</a> and <a href="https://github.com/r-lib/testthat/blob/5ed0bb15fb923eebca8eff529dd50fbf94fd717f/R/test-that.R#L177"><code>testthat</code> makes testing fun</a>, <code>httptest</code> makes testing your code that uses HTTP a simple pleasure.</p>
+<p>The goal of <code>httptest</code> is to remove a big obstacle to
+testing code that communicates with HTTP services: the HTTP service
+itself. If <a href="https://github.com/r-lib/httr/blob/master/R/httr.r#L1"><code>httr</code>
+makes HTTP easy</a> and <a href="https://github.com/r-lib/testthat/blob/5ed0bb15fb923eebca8eff529dd50fbf94fd717f/R/test-that.R#L177"><code>testthat</code>
+makes testing fun</a>, <code>httptest</code> makes testing your code
+that uses HTTP a simple pleasure.</p>
 </div>
 
 

@@ -87,7 +87,7 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
   req_tracer <- substitute(
     {
       # Get the value returned from the function, and sanitize it
-      redactor <- get_current_redactor()
+      redactor <- httptest::get_current_redactor()
       .resp <- returnValue()
       if (is.null(.resp)) {
         # returnValue() defaults to NULL if the traced function exits with
@@ -96,7 +96,7 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
           call. = FALSE
         )
       } else {
-        save_response(redactor(.resp), simplify = simplify)
+        httptest::save_response(redactor(.resp), simplify = simplify)
       }
     },
     list(simplify = simplify)
@@ -121,7 +121,7 @@ start_capturing <- function(path = NULL, simplify = TRUE) {
 #' @importFrom jsonlite prettify
 save_response <- function(response, simplify = TRUE) {
   # Construct the mock file path
-  mock_file <- build_mock_url(response$request)
+  mock_file <- build_mock_url(get_current_requester()(response$request))
   # Track separately the actual full path we're going to write to
   dst_file <- file.path(.mockPaths()[1], mock_file)
   mkdir_p(dst_file)

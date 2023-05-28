@@ -1,4 +1,14 @@
-# httptest 4.0.0.9000
+# httptest 4.2.0
+
+* `with_mock_dir()` uses the requester set by `set_requester()` (#70, @maelle).
+* `capture_requests()` can be used without loading `library(httptest)` (#77, @kforner).
+* `stop_mocking()` correctly untraces all functions (#79, @kforner).
+* `get_current_requester()` is now included within the package exports to match the behavior of `get_current_redactor()` (#81, @stephenashton-dhsc).
+
+# httptest 4.1.0
+
+* Function alias `with_mock_API`, deprecated in 3.0.0, has been removed.
+* Update some tests for an upcoming release of `testthat`.
 
 # httptest 4.0.0
 
