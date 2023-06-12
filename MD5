@@ -1,7 +1,7 @@
-98c7a44498e6df0c80fba40f56686b26 *DESCRIPTION
+56e4fb22be591c6a725e7ec3a0f4dc27 *DESCRIPTION
 d322d0a070dde35011da6f246613723c *LICENSE
 c38cc3b03d9aabd7a237446b63654ea2 *NAMESPACE
-a820818da45b7ae8f2995cc95df337ef *NEWS.md
+5192e432df9be5d32c6570a00d1cccc8 *NEWS.md
 211a003b344535c56e8ce28fa78df627 *R/capture-requests.R
 2561e5304733881dbf2898f7945eb4f4 *R/content-type.R
 12031ef73cf2e7a56a9d7948af3fe215 *R/expect-header.R
@@ -88,7 +88,7 @@ adde866bfe59755df2fb546c692245e5 *tests/testthat/httpbin.org/cookies/set-5b2631.
 b05a34f6a2e63d860771e7b3c4d40306 *tests/testthat/test-fake-http.R
 b5367be54b2eea6e9b48e3703dc7d724 *tests/testthat/test-find-redactor.R
 cb50cac8b419ffe6a3fcddc2c970d5b1 *tests/testthat/test-json-equal.R
-f503f0cb1dfc0b2792b762a51359eb81 *tests/testthat/test-mock-api.R
+c33a52f9829fd4a7a6a0a09fe6ea6a8c *tests/testthat/test-mock-api.R
 9c4625093d85ec49db34b525b3824d91 *tests/testthat/test-mock-dir.R
 62fb5a9102287f6d8ee1a5fe5217f3a0 *tests/testthat/test-mock-paths.R
 955e3be6fd1aa6f876dab526061c98b5 *tests/testthat/test-offline.R
