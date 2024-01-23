@@ -1,3 +1,7 @@
+# httptest 4.2.2
+
+* A couple of fixes to the docs, in response to CRAN request
+
 # httptest 4.2.1
 
 * Update a test expectation due to the addition of a `name` field in `curl::form_file()` in version 5.0.

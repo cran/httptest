@@ -393,27 +393,27 @@ will be affected—the actual response you’re capturing in your active R
 session is not modified, only the mock that is written out.</p>
 <p>To illustrate, here’s a request that has a cookie in the response.
 Let’s record it.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">capture_requests</span>(<span class="at">simplify =</span> <span class="cn">FALSE</span>, {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  real_resp <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/cookies/set?token=12345&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">capture_requests</span>(<span class="at">simplify =</span> <span class="cn">FALSE</span>, {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  real_resp <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;http://httpbin.org/cookies/set?token=12345&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>})</span></code></pre></div>
 <p>In the actual response object in our R session, the cookie is
 there:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>real_resp<span class="sc">$</span>cookies</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="do">##        domain  flag path secure expiration  name value</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="do">## 1 httpbin.org FALSE    /  FALSE       &lt;NA&gt; token 12345</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>real_resp<span class="sc">$</span>cookies</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="do">##        domain  flag path secure expiration  name value</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="do">## 1 httpbin.org FALSE    /  FALSE       &lt;NA&gt; token 12345</span></span></code></pre></div>
 <p>But when we load that recorded response in tests later, the cookie
 won’t appear because it was redacted:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mockfile <span class="ot">&lt;-</span> <span class="st">&quot;httpbin.org/cookies/set-5b2631.R&quot;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mock <span class="ot">&lt;-</span> <span class="fu">source</span>(mockfile)<span class="sc">$</span>value</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mock<span class="sc">$</span>cookies</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="do">##        domain  flag path secure expiration  name    value</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## 1 httpbin.org FALSE    /  FALSE       &lt;NA&gt; token REDACTED</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>mock<span class="sc">$</span>all_headers[[<span class="dv">1</span>]][[<span class="st">&quot;set-cookie&quot;</span>]]</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] &quot;REDACTED&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>mockfile <span class="ot">&lt;-</span> <span class="st">&quot;httpbin.org/cookies/set-5b2631.R&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>mock <span class="ot">&lt;-</span> <span class="fu">source</span>(mockfile)<span class="sc">$</span>value</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>mock<span class="sc">$</span>cookies</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="do">##        domain  flag path secure expiration  name    value</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="do">## 1 httpbin.org FALSE    /  FALSE       &lt;NA&gt; token REDACTED</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>mock<span class="sc">$</span>all_headers[[<span class="dv">1</span>]][[<span class="st">&quot;set-cookie&quot;</span>]]</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="do">## [1] &quot;REDACTED&quot;</span></span></code></pre></div>
 <blockquote>
 <p>Side note: the example uses the <code>simplify=FALSE</code> option to
 <code>capture_requests</code> for illustration purposes. With the
@@ -452,7 +452,7 @@ find-and-replace it with <code>gsub_response()</code>. The function
 takes <code>response</code> as its first argument and then passes the
 rest to <code>gsub()</code>, which is called on both the response URL
 and the response body.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_redactor</span>(<span class="sc">~</span> <span class="fu">gsub_response</span>(., <span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">set_redactor</span>(<span class="sc">~</span> <span class="fu">gsub_response</span>(., <span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>))</span></code></pre></div>
 <p>Note the formula shorthand: this follows the syntax in the <a href="https://purrr.tidyverse.org"><code>purrr</code></a> package for
 defining anonymous functions. It is equivalent to
 <code>function(response) gsub_response(response, getOption(&quot;pivotal.project&quot;), &quot;123&quot;)</code>.</p>
@@ -469,22 +469,22 @@ sequence on the response</li>
 </ul>
 <p>To see this in action, let’s record a request:</p>
 <!-- show the output -->
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_redactor</span>(redact_pivotal)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">start_capturing</span>()</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">getStories</span>(<span class="at">search =</span> <span class="st">&quot;mnt&quot;</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">stop_capturing</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">set_redactor</span>(redact_pivotal)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">start_capturing</span>()</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">getStories</span>(<span class="at">search =</span> <span class="st">&quot;mnt&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">stop_capturing</span>()</span></code></pre></div>
 <p>Note that the actual project id appears in the data returned from the
 search.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>s[[<span class="dv">1</span>]]<span class="sc">$</span>project_id</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] &quot;my-project-name&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>s[[<span class="dv">1</span>]]<span class="sc">$</span>project_id</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="do">## [1] &quot;my-project-name&quot;</span></span></code></pre></div>
 <p>However, the project id won’t be found in the recorded file. If we
 load the recorded response in <code>with_mock_api</code>, we’ll see the
 value we substituted in:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with_mock_api</span>({</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">getStories</span>(<span class="at">search =</span> <span class="st">&quot;mnt&quot;</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>s[[<span class="dv">1</span>]]<span class="sc">$</span>project_id</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] &quot;123&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">with_mock_api</span>({</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">getStories</span>(<span class="at">search =</span> <span class="st">&quot;mnt&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>})</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>s[[<span class="dv">1</span>]]<span class="sc">$</span>project_id</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="do">## [1] &quot;123&quot;</span></span></code></pre></div>
 <p>Nor will the project id appear in the file path: since the redactor
 is evaluated before determining the file path to write to, if you alter
 the response URL, the destination file path will be generated based on
@@ -499,14 +499,14 @@ package.</p>
 <p>Continuing with the <code>pivotaltrackR</code> example, let’s also
 prune the domain and API root path from the URLs we’re recording so that
 we’re making shorter file paths:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">function</span>(response) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(magrittr, <span class="at">quietly=</span><span class="cn">TRUE</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  response <span class="sc">%&gt;%</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shorten the URL</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_response</span>(<span class="st">&quot;https://www.pivotaltracker.com/services/v5/&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove my project ID</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_response</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="cf">function</span>(response) {</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="fu">require</span>(magrittr, <span class="at">quietly=</span><span class="cn">TRUE</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  response <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="co"># Shorten the URL</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>    <span class="fu">gsub_response</span>(<span class="st">&quot;https://www.pivotaltracker.com/services/v5/&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>    <span class="co"># Remove my project ID</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="fu">gsub_response</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="setting-a-package-level-redactor" class="section level2">
 <h2>Setting a package-level redactor</h2>
@@ -543,7 +543,7 @@ map to files.</p>
 <p>For example, if all of your API endpoints sit beneath
 <code>https://language.googleapis.com/v1/</code>, you could set a
 request preprocessor like:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_requester</span>(<span class="sc">~</span> <span class="fu">gsub_request</span>(., <span class="st">&quot;https</span><span class="sc">\\</span><span class="st">://language.googleapis.com/v1/&quot;</span>, <span class="st">&quot;api/&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">set_requester</span>(<span class="sc">~</span> <span class="fu">gsub_request</span>(., <span class="st">&quot;https</span><span class="sc">\\</span><span class="st">://language.googleapis.com/v1/&quot;</span>, <span class="st">&quot;api/&quot;</span>))</span></code></pre></div>
 <p>and then all mocked requests would look for a path starting with
 “api/” rather than “language.googleapis.com/v1/”, saving you (in this
 case) 23 characters.</p>
@@ -553,12 +553,12 @@ and any time your package is loaded and you’re reading mock (previously
 recorded) responses, this function will be called on the
 <code>request</code> object before mapping it to a file. For example, <a href="https://github.com/nealrichardson/pivotaltrackR/blob/master/inst/httptest/request.R">here</a>
 is the one from <code>pivotaltrackR</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">function</span>(request) {</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(magrittr, <span class="at">quietly=</span><span class="cn">TRUE</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  request <span class="sc">%&gt;%</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="st">&quot;https://www.pivotaltracker.com/services/v5/&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="cf">function</span>(request) {</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="fu">require</span>(magrittr, <span class="at">quietly=</span><span class="cn">TRUE</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  request <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="st">&quot;https://www.pivotaltracker.com/services/v5/&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 
 

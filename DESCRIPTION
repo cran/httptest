@@ -13,7 +13,7 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables one to write vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 4.2.1
+Version: 4.2.2
 Authors@R: c(
         person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com", comment=c(ORCID="0009-0002-7992-3520")),
         person("Jonathan", "Keane", role="ctb", email="jkeane@gmail.com"),
@@ -33,10 +33,10 @@ VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/coverage: covr
 NeedsCompilation: no
-Packaged: 2023-06-09 21:26:08 UTC; enpiar
+Packaged: 2024-01-23 17:39:43 UTC; npr
 Author: Neal Richardson [aut, cre] (<https://orcid.org/0009-0002-7992-3520>),
   Jonathan Keane [ctb],
   Maëlle Salmon [ctb] (<https://orcid.org/0000-0002-2815-0399>)
 Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
 Repository: CRAN
-Date/Publication: 2023-06-12 12:40:02 UTC
+Date/Publication: 2024-01-23 19:40:02 UTC

@@ -375,9 +375,9 @@ a function that alters the content of your ‘httr’ <code>request</code>
 before mapping it to a mock file. For example, if all of your API
 endpoints sit beneath <code>https://language.googleapis.com/v1/</code>,
 you could set a request preprocessor like:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set_requester</span>(<span class="cf">function</span> (request) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gsub_request</span>(request, <span class="st">&quot;https</span><span class="sc">\\</span><span class="st">://language.googleapis.com/v1/&quot;</span>, <span class="st">&quot;api/&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">set_requester</span>(<span class="cf">function</span> (request) {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">gsub_request</span>(request, <span class="st">&quot;https</span><span class="sc">\\</span><span class="st">://language.googleapis.com/v1/&quot;</span>, <span class="st">&quot;api/&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>})</span></code></pre></div>
 <p>and then all mocked requests would look for a path starting with
 “api/” rather than “language.googleapis.com/v1/”, saving you (in this
 case) 23 characters.</p>
@@ -430,10 +430,10 @@ run against a live API so that you can detect and respond to API
 changes. One option is to set up some tests with the
 <code>with_mock_dir()</code> context instead of
 <code>with_mock_api()</code>. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">with_mock_dir</span>(<span class="st">&quot;httpbin-get&quot;</span>, {</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://httpbin.org/get&quot;</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">with_mock_dir</span>(<span class="st">&quot;httpbin-get&quot;</span>, {</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  a <span class="ot">&lt;-</span> <span class="fu">GET</span>(<span class="st">&quot;https://httpbin.org/get&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">print</span>(a)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>})</span></code></pre></div>
 <p>The first time you run the code, it will create the directory
 <code>tests/testthat/httpbin-get</code>, and create mock files under it.
 The next times you run it, it will <em>use</em> the mock files in

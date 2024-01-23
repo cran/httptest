@@ -468,22 +468,22 @@ for your tests and vignettes, there are a couple of options. Both of
 these functions (response redactor and request preprocessor) can be
 defined and set in your document’s initial code chunk, using
 <code>set_redactor</code> and <code>set_requester</code>, like this:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(httptest)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>api_root <span class="ot">&lt;-</span> <span class="st">&quot;https://www.pivotaltracker.com/services/v5/&quot;</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set_redactor</span>(<span class="cf">function</span>(response) {</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  response <span class="sc">%&gt;%</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">redact_headers</span>(<span class="st">&quot;X-TrackerToken&quot;</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_response</span>(api_root, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_response</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">set_requester</span>(<span class="cf">function</span>(request) {</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  request <span class="sc">%&gt;%</span></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_request</span>(api_root, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">start_vignette</span>(<span class="st">&quot;stories&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(httptest)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>api_root <span class="ot">&lt;-</span> <span class="st">&quot;https://www.pivotaltracker.com/services/v5/&quot;</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">set_redactor</span>(<span class="cf">function</span>(response) {</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  response <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="fu">redact_headers</span>(<span class="st">&quot;X-TrackerToken&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="fu">gsub_response</span>(api_root, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>    <span class="fu">gsub_response</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>})</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="fu">set_requester</span>(<span class="cf">function</span>(request) {</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>  request <span class="sc">%&gt;%</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>    <span class="fu">gsub_request</span>(api_root, <span class="st">&quot;&quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a>    <span class="fu">gsub_request</span>(<span class="fu">getOption</span>(<span class="st">&quot;pivotal.project&quot;</span>), <span class="st">&quot;123&quot;</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>})</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="fu">start_vignette</span>(<span class="st">&quot;stories&quot;</span>)</span></code></pre></div>
 <p>This is useful if you’re writing an R Markdown document outside of
 the context of a package.</p>
 <p>Alternatively, you can put vignette-specific setup and teardown code
