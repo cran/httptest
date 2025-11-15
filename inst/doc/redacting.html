@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -436,11 +437,10 @@ redactors on any part of the response object, not just the headers and
 cookies. A redactor is just a function that takes a response as input
 and returns a response object, so anything is possible if you write a
 custom redactor.</p>
-<p>For example, in the <a href="https://www.pivotaltracker.com/help/api">API for Pivotal
-Tracker</a>, the agile project management tool, the Pivotal project id
-is built into many of its URLs. As a result, it would appear in mock
-file paths you record. The id is also often included in the response
-body.</p>
+<p>For example, in the API for Pivotal Tracker, the now-defunct agile
+project management tool, the Pivotal project id is built into many of
+its URLs. As a result, it would appear in mock file paths you record.
+The id is also often included in the response body.</p>
 <p>We’d rather not have that information leak in our test fixtures, so
 in the <a href="https://enpiar.com/r/pivotaltrackR/">pivotaltrackR</a>
 package, which wraps this API, we need to tell

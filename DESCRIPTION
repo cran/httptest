@@ -13,7 +13,7 @@ Description: Testing and documenting code that communicates with remote servers
     test fixtures. The ability to save responses and load them offline also
     enables one to write vignettes and other dynamic documents that can be
     distributed without access to a live server.
-Version: 4.2.2
+Version: 4.2.3
 Authors@R: c(
         person("Neal", "Richardson", role=c("aut", "cre"), email="neal.p.richardson@gmail.com", comment=c(ORCID="0009-0002-7992-3520")),
         person("Jonathan", "Keane", role="ctb", email="jkeane@gmail.com"),
@@ -27,16 +27,17 @@ Depends: R (>= 3.5.0), testthat
 Imports: curl, digest, httr, jsonlite, stats, utils
 Suggests: knitr, pkgload, rmarkdown, spelling, xml2
 Language: en-US
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
 Encoding: UTF-8
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/Needs/coverage: covr
 NeedsCompilation: no
-Packaged: 2024-01-23 17:39:43 UTC; npr
-Author: Neal Richardson [aut, cre] (<https://orcid.org/0009-0002-7992-3520>),
+Packaged: 2025-11-15 14:27:43 UTC; npr
+Author: Neal Richardson [aut, cre] (ORCID:
+    <https://orcid.org/0009-0002-7992-3520>),
   Jonathan Keane [ctb],
-  Maëlle Salmon [ctb] (<https://orcid.org/0000-0002-2815-0399>)
+  Maëlle Salmon [ctb] (ORCID: <https://orcid.org/0000-0002-2815-0399>)
 Maintainer: Neal Richardson <neal.p.richardson@gmail.com>
 Repository: CRAN
-Date/Publication: 2024-01-23 19:40:02 UTC
+Date/Publication: 2025-11-15 22:50:02 UTC

@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -388,9 +389,8 @@ server can return?</p>
 <div id="example" class="section level2">
 <h2>Example</h2>
 <p>To illustrate the power of <code>with_mock_api</code>, let’s try to
-add tests to an R package that wraps a prominent web API. The
-<code>twitteR</code> package is quite popular (<a href="https://cranlogs.r-pkg.org/badges/twitteR">13k downloads per
-month</a>, at the time of writing), but like most R packages, it doesn’t
+add tests to an R package that wraps a (once) prominent web API. The
+<code>twitteR</code> package, at the time of writing at least, did not
 have a test suite. Indeed, it is hard to test the querying of an API
 that requires OAuth authentication, and thus a user account to use in
 testing. That’s tricky to set up to run locally, and even more
@@ -404,15 +404,14 @@ to your package <code>DESCRIPTION</code> and makes sure it is loaded in
 your test setup code.</p>
 <p>Now we can start with our tests. From some experimenting, it’s clear
 that the package checks to see if you have an OAuth token set. We’re not
-actually going to hit the real Twitter API, so we don’t need a valid
-token—we just need a token to exist so the R code that looks for a token
-finds one:</p>
+actually going to hit the real API, so we don’t need a valid token—we
+just need a token to exist so the R code that looks for a token finds
+one:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">use_oauth_token</span>(<span class="st">&quot;foo&quot;</span>)</span></code></pre></div>
 <p>Let’s write a test. Add “test-user.R” to your test directory and put
 a test for getting a user record, via the <code>getUser</code> function.
 According to the source code, this function should hit the “show user”
-Twitter API, documented <a href="https://dev.twitter.com/rest/reference/get/users/show">here</a>.
-But, we’re going to prevent that request from actually happening by
+API. But, we’re going to prevent that request from actually happening by
 wrapping our test in the <code>with_mock_api</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">context</span>(<span class="st">&quot;Get a user&quot;</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>

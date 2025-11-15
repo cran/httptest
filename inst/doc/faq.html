@@ -48,6 +48,7 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -413,10 +414,10 @@ minimally reproducible examples, and of making tests readable, it often
 makes sense to take an actual API response and delete a lot of its
 content, or even to fabricate one entirely.</li>
 <li>It’s good to keep an API mock fixed so you know exactly what is in
-it. If you re-recorded a Twitter API response of, say, the most recent
-10 tweets with <code>#rstats</code>, the specific content will change
-every time you record it, so your tests can’t say much about what is in
-the response without having to rewrite them every time too.</li>
+it. If you re-recorded a API response of, say, the most recent 10
+messages in a discussion forum, the specific content will change every
+time you record it, so your tests can’t say much about what is in the
+response without having to rewrite them every time too.</li>
 <li>Some conditions (rate limiting, server errors, e.g.) are difficult
 to test with real responses, but if you can hand-create a API mock with,
 say, a 503 response status code and test how your code handles it, you
